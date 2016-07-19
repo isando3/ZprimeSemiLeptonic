@@ -2,7 +2,7 @@
 <!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd" [
 <!ENTITY NEVT "-1">
 
-<!-- <!ENTITY NEVT "10000"> -->
+ 
   <!-- <!ENTITY NEVT "124896137"> -->
 
   <!ENTITY KEYW "v01">
@@ -74,7 +74,7 @@
 
 <!--
    <ConfigParse NEventsBreak="0" LastBreak="0" FileSplit="10" AutoResubmit="10"/>
-   <ConfigSGE RAM ="2" DISK ="2" Mail="isando3@uic.edu" Notification="as" Workdir="workdir"/>
+   <ConfigSGE RAM ="2" DISK ="2" Mail="XXXX" Notification="as" Workdir="workdir"/>
 -->
 
 <JobConfiguration JobName="TTbarLJSkimmingJob" OutputLevel="INFO">
@@ -83,14 +83,13 @@
 
  <Cycle Name="uhh2::AnalysisModuleRunner" OutputDirectory="&OUTdir;/" PostFix="" TargetLumi="1">
 
-  <!--
+  
    <InputData Version="SingleEG" Lumi="1" Type="DATA" NEventsMax="&NEVT;" Cacheable="False">
-I    &SingleEG; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData> 
-  -->
-  <!-- <InputData Version="SingleMU" Lumi="1" Type="DATA" NEventsMax="&NEVT;" Cacheable="False">
+    &SingleEG; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData> 
+  
+   <InputData Version="SingleMU" Lumi="1" Type="DATA" NEventsMax="&NEVT;" Cacheable="False">
     &SingleMU; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
--->
-<!--
+
    <InputData Version="TTbar" Lumi="1" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
     &TTbar; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
 
@@ -107,7 +106,7 @@ I    &SingleEG; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"
     &WJets_HT1200To2500; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
     <InputData Version="WJets_HT2500ToInf" Lumi="1" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
     &WJets_HT2500ToInf; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
-    -->
+    
 
  <!--
 
@@ -124,7 +123,7 @@ I    &SingleEG; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"
     <InputData Version="WJets_HT2500ToInf__L" Lumi="1" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
     &WJets_HT2500ToInf; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
 -->
-
+<!--
     <InputData Version="WJets_HT0200To0400__C" Lumi="45854.3" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
     &WJets_HT0200To0400; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
    <InputData Version="WJets_HT0400To0600__C" Lumi="121227.5" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
@@ -137,7 +136,7 @@ I    &SingleEG; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"
     &WJets_HT1200To2500; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
     <InputData Version="WJets_HT2500ToInf__C" Lumi="63886636" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
     &WJets_HT2500ToInf; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
-
+-->
 
 <!--
    <InputData Version="WJets_HT0200To0400__B" Lumi="45854.3" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
@@ -153,7 +152,7 @@ I    &SingleEG; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"
     <InputData Version="WJets_HT2500ToInf__B" Lumi="63886636" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
     &WJets_HT2500ToInf; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
 -->
-<!--
+
     <InputData Version="WW" Lumi="1" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
     &WW; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
     <InputData Version="WZ" Lumi="1" Type="MC" NEventsMax="&NEVT;" Cacheable="False">    &WZ; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>
@@ -254,7 +253,6 @@ I    &SingleEG; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"
 <InputData Version="Zp30w4000" Lumi="1" Type="MC" NEventsMax="&NEVT;" Cacheable="False">
     &ZprimeToTT_30w_M4000; <InputTree Name="AnalysisTree"/> <OutputTree Name="AnalysisTree"/> </InputData>  
 
--->
     <UserConfig>
         <Item Name="PrimaryVertexCollection" Value="offlineSlimmedPrimaryVertices"/>
         <Item Name="GenParticleCollection"   Value="GenParticles"/>
