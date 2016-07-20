@@ -54,6 +54,7 @@ class TTbarLJAnalysisLiteModule : public ModuleBASE {
   std::unique_ptr<uhh2::Selection> jet2_sel;
   std::unique_ptr<uhh2::Selection> jet1_sel;
   std::unique_ptr<uhh2::Selection> trigger_sel;
+  std::unique_ptr<uhh2::Selection> trigger2_sel;
   std::unique_ptr<uhh2::Selection> met_sel;
   std::unique_ptr<uhh2::Selection> htlep_sel;
   std::unique_ptr<uhh2::Selection> triangc_sel;
@@ -533,7 +534,11 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
   const std::string& trigger = ctx.get("trigger", "NULL");
   if(trigger != "NULL") trigger_sel.reset(new TriggerSelection(trigger));
   else                  trigger_sel.reset(new uhh2::AndSelection(ctx));
-
+ 
+  const std::string& trigger2 = ctx.get("trigger2", "NULL");
+  if(trigger2 != "NULL" && !isMC) trigger2_sel.reset(new TriggerSelection(trigger2));
+  else                  trigger2_sel.reset(new uhh2::AndSelection(ctx));
+ 
   met_sel  .reset(new METCut  (MET   , uhh2::infinity));
   htlep_sel.reset(new HTlepCut(HT_lep, uhh2::infinity));
 
@@ -1216,8 +1221,10 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
   //// HLT selection
   const bool pass_trigger = trigger_sel->passes(event);
   //  if(!pass_trigger) return false;
-  if(!pass_trigger && event.isRealData) return false; //apply only on data
-  //  else std::cout<<"Passed trigger!!! "<<std::endl;
+  const bool pass_trigger2 = trigger2_sel->passes(event);
+  //if(!pass_trigger && event.isRealData) return false;
+  //
+  if(!(pass_trigger||pass_trigger2) && event.isRealData) return false; //apply only on data
   if(lepN == 1) HFolder("trigger")->fill(event);
   ////
 
