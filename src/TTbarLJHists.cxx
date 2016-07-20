@@ -12,6 +12,7 @@ TTbarLJHists::TTbarLJHists(uhh2::Context& ctx, const std::string& dirname):
 
   init();
   tt_tmva_response = ctx.get_handle<float>("TMVA_response");
+  wjets_tmva_response = ctx.get_handle<float>("WJets_TMVA_response");
 }
 
 TTbarLJHists::TTbarLJHists(uhh2::Context& ctx, const std::string& dirname, const TopJetId& ttag_id, const float dr__ttag_jet):
@@ -19,6 +20,7 @@ TTbarLJHists::TTbarLJHists(uhh2::Context& ctx, const std::string& dirname, const
 
   init();
   tt_tmva_response = ctx.get_handle<float>("TMVA_response");
+  wjets_tmva_response = ctx.get_handle<float>("WJets_TMVA_response");
 }
 
 void TTbarLJHists::init(){
@@ -194,7 +196,7 @@ void TTbarLJHists::init(){
   book_TH2F("met__pt__vs__dphi_met_jet1", 90, 0, 900, 60, 0, 3.15);
 
   TMVA_response = book<TH1F>("TMVA_response", "TMVA response", 50,-1.2,1.8);
-
+  WJets_TMVA_response = book<TH1F>("WJets_TMVA_response", "WJets TMVA response", 50,-1.2,1.8);
   return;
 }
 
@@ -477,5 +479,6 @@ void TTbarLJHists::fill(const uhh2::Event& event){
   if(event.jets->size()) H2("met__pt__vs__dphi_met_jet1")->Fill(event.met->pt(), fabs(uhh2::deltaPhi(*event.met, event.jets->at(0))), weight);
 
   TMVA_response->Fill(event.get(tt_tmva_response), weight);
+  WJets_TMVA_response->Fill(event.get(wjets_tmva_response), weight);
   return;
 }
