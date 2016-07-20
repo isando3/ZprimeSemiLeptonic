@@ -23,5 +23,7 @@ class TTbarLJHists : public HistsBASE {
  private:
   TH1F* TMVA_response;
   uhh2::Event::Handle<float> tt_tmva_response;
+  TH1F* WJets_TMVA_response;
+  uhh2::Event::Handle<float> wjets_tmva_response;
 
 };

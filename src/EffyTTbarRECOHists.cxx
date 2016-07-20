@@ -99,8 +99,9 @@ void EffyTTbarRECOHists::init(){
   book_TH1F("rec_tlep__gen_Dpz"    , 120, -600, 600);
   book_TH1F("rec_tlep__gen_Deta"   , 120, -1.2, 1.2);
   book_TH1F("rec_tlep__gen_Dphi"   , 21, 0, 3.15);
+
   book_TH1F("rec_tlep__gen_DR"     , 39, 0, 3);
-  book_TH1F("rec_tlep__gen_DM_pct" , 24 -1.2, 1.2);
+  book_TH1F("rec_tlep__gen_DM_pct" , 24, -1.2, 1.2);
   book_TH1F("rec_tlep__gen_Dpt_pct", 24, -1.2, 1.2);
   book_TH1F("rec_tlep__gen_Dpx_pct", 24, -1.2, 1.2);
   book_TH1F("rec_tlep__gen_Dpy_pct", 24, -1.2, 1.2);

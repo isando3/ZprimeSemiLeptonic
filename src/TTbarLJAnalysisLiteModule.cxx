@@ -33,7 +33,7 @@
 #include <UHH2/ZprimeSemiLeptonic/include/SF_elec.h>
 #include <UHH2/ZprimeSemiLeptonic/include/SF_ttagging.h>
 #include <UHH2/ZprimeSemiLeptonic/include/SF_WjetsREWGT.h>
-
+#include <UHH2/ZprimeSemiLeptonic/include/jacobi_eigenvalue.h>
 #include <TMVA/Tools.h>
 #include <TMVA/Reader.h>
 #include <TMVA/MethodCuts.h>
@@ -74,6 +74,8 @@ class TTbarLJAnalysisLiteModule : public ModuleBASE {
   uhh2::Event::Handle<std::vector<ReconstructionHypothesis> > h_ttbar_hyps;
 
   float lep1_pt_;
+  int it_num;
+  int rot_num;
 
   JetId btag_ID_;
   CSVBTag::wp b_working_point;
@@ -185,7 +187,10 @@ class TTbarLJAnalysisLiteModule : public ModuleBASE {
 
   Event::Handle<std::vector<float> > h_wgtMC__PDF;
   //
-
+  //   __   __   __      __   __  ___               __          __        ___  __
+  //  /  \ /  ` |  \    |__) |  \  |     \  /  /\  |__) |  /\  |__) |    |__  /__`
+  //  \__X \__, |__/    |__) |__/  |      \/  /~~\ |  \ | /~~\ |__) |___ |___ .__/
+  //begin
   // vars in TTree for Homemade ttbar MVA
   Event::Handle<float> tt_lep_pt;//lepton pt
   Event::Handle<float> tt_lep_pt_err;//lepton pt error
@@ -246,13 +251,13 @@ class TTbarLJAnalysisLiteModule : public ModuleBASE {
   Event::Handle<float> tt_dEtaIn;
   Event::Handle<float> tt_dPhiIn;
   //top tagging variables
-  Event::Handle<float> tt_qjets_volatility;
-  Event::Handle<float> tt_tau1;
-  Event::Handle<float> tt_tau2;
-  Event::Handle<float> tt_tau3;
-  Event::Handle<float> tt_mvahiggsdiscr;
-  Event::Handle<float> tt_prunedmass;
-  Event::Handle<float> tt_softdropmass;
+  //Event::Handle<float> tt_qjets_volatility;
+  //Event::Handle<float> tt_tau1;
+  //Event::Handle<float> tt_tau2;
+  //Event::Handle<float> tt_tau3;
+  //Event::Handle<float> tt_mvahiggsdiscr;
+  //Event::Handle<float> tt_prunedmass;
+  //Event::Handle<float> tt_softdropmass;
 
   Event::Handle<float> tt_ev_weight;// event weight
   Event::Handle<float> tt_mttbar;//ttbar rec inv. mass
@@ -292,13 +297,61 @@ class TTbarLJAnalysisLiteModule : public ModuleBASE {
   // float jets_pt_to_ljet_pt,  log_lep_xy_corr, log_ljet_CSV_ljet_pt;
   float lep_dB, lep_sigmaIEtaIEta, lep_HoverE, lep_EoverPIn, lep_hcalOverEcal, lep_dr03TkSumPt, lep_effArea, lep_mvaNonTrigV0;
   float lep_dEtaIn, lep_dPhiIn;
-  float top_qjets_volatility,top_tau1, top_tau2, top_tau3, top_mvahiggsdiscr, top_prunedmass, top_softdropmass;
+  //float top_qjets_volatility,top_tau1, top_tau2, top_tau3, top_mvahiggsdiscr, top_prunedmass, top_softdropmass;
   float TMVA_response;
   Event::Handle<float> tt_TMVA_response;// response of TMVA method
-  std::unique_ptr<TMVA::Reader> reader;
+  float WJets_TMVA_response;
+  Event::Handle<float> wjets_TMVA_response;
+  std::unique_ptr<TMVA::Reader> reader_qcd;
   TString methodName;
   float varMVA[20];
-
+  
+  ////////////////////////////////////////////////////////////////////////////
+    //           ___ ___  __      __   __  ___               __          __        ___  __
+   // |  |    | |__   |  /__`    |__) |  \  |     \  /  /\  |__) |  /\  |__) |    |__  /__`
+   // |/\| \__/ |___  |  .__/    |__) |__/  |      \/  /~~\ |  \ | /~~\ |__) |___ |___ .__/
+    Event::Handle<float>          h_s11;                //1
+    Event::Handle<float>          h_s12;                //2
+    Event::Handle<float>          h_s13;                //3
+    Event::Handle<float>          h_s22;                //4
+    Event::Handle<float>          h_s23;                //5
+    Event::Handle<float>          h_s33;                //6
+    Event::Handle<float>        h_aplanarity;           //7
+    Event::Handle<float>        h_sphericity;           //8
+    Event::Handle<float>    h_jet1__pt;                 //9
+    Event::Handle<float>    h_jet2__pt;                 //10
+    Event::Handle<float>    h_lep1__pTrel_jet_norm;     //11
+    Event::Handle<float>    h_ht__metlep_norm;          //12
+    Event::Handle<float>    h_jet1__csv;                //13
+    Event::Handle<float>    h_jet2__csv;                //14
+    Event::Handle<float>    h_DRpt;                     //15
+    Event::Handle<int>      h_njets;                    //16
+    Event::Handle<float>    h_jet1__M;                  //17
+    Event::Handle<float>    h_jet2__M;                  //18
+    Event::Handle<float>          h_lep1__minDR_norm;   //19
+    //Event::Handle<float> h_wjets_bdtresponse;
+    TMVA::Reader *reader_wjets;
+    //float bdtresponse;
+    float mva_DRpt_norm;                                //1
+    float mva_ht_met_lep_norm;                          //2
+    float mva_lep1__minDR_jet;                          //3
+    float mva_ptrel_norm;                               //4
+    float mva_j1CSV;                                    //5
+    float mva_jet1pt_norm;                              //6
+    float mva_jet1m_norm;                               //7
+    float mva_j2CSV;                                    //8
+    float mva_jet2pt_norm;                              //9
+    float mva_jet2m_norm;                               //10
+    float mva_njets;                                    //11
+    float mva_s11;                                      //12
+    float mva_s12;                                      //13
+    float mva_s13;                                      //14
+    float mva_s22;                                      //15
+    float mva_s23;                                      //16
+    float mva_s33;                                      //17
+    float mva_sphericity;                               //18
+    float mva_aplanarity;                               //19
+ 
   ////
 };
 
@@ -360,12 +413,12 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
     }
     else if(channel_ == elec){
 
-      lep1_pt_ =   50.;
+      lep1_pt_ =   55.;
 
-      jet1_pt  = 250.;
-      jet2_pt  =  70.;
+      jet1_pt  = 170.;
+      jet2_pt  =  50.;
 
-      MET      = 120.;
+      MET      =  40.;
       HT_lep   =   0.;
 
       // jet1_pt  = 0.;
@@ -580,26 +633,30 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
     "kine",
     "kine__t0b0",
     "kine__t0b1",
-    "kine__t0b2",
-    "kine__t1b0",
-    "kine__t1b1",
-    "kine__t1b2",
+    //"kine__t0b2",
+    "kine__t1b",
+    //"kine__t1b1",
+    //"kine__t1b2",
 
     "antichi2",
     "antichi2__t0b0",
     "antichi2__t0b1",
-    "antichi2__t0b2",
-    "antichi2__t1b0",
-    "antichi2__t1b1",
-    "antichi2__t1b2",
+    //"antichi2__t0b2",
+    "antichi2__t1b",
+    //"antichi2__t1b1",
+    //"antichi2__t1b2",
 
     "chi2",
     "chi2__t0b0",
     "chi2__t0b1",
-    "chi2__t0b2",
-    "chi2__t1b0",
-    "chi2__t1b1",
-    "chi2__t1b2",
+    //"chi2__t0b2",
+    "chi2__t1b",
+    //"chi2__t1b1",
+    //"chi2__t1b2",
+    "chi2_bdt",
+    "chi2_bdt__t0b0",
+    "chi2_bdt__t0b1",
+    "chi2_bdt__t1b",
   });
 
   for(const auto& tag : htags_2){
@@ -614,10 +671,10 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
     "chi2_L2",
     "chi2_L2__t0b0",
     "chi2_L2__t0b1",
-    "chi2_L2__t0b2",
-    "chi2_L2__t1b0",
-    "chi2_L2__t1b1",
-    "chi2_L2__t1b2",
+    //"chi2_L2__t0b2",
+    "chi2_L2__t1b",
+    //"chi2_L2__t1b1",
+    //"chi2_L2__t1b2",
   });
 
   for(const auto& tag : htags_3){
@@ -793,6 +850,60 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
   h_wgtMC__PDF            = ctx.declare_event_output<std::vector<float> >("wgtMC__PDF");
   //
 
+ //wjets bdt  histograms
+    
+   //BDT Dump variables
+    h_jet1__pt          = ctx.declare_event_output<float>          ("jet1_pt");
+    h_jet2__pt          = ctx.declare_event_output<float>          ("jet2_pt");
+    h_ht__metlep_norm   = ctx.declare_event_output<float>          ("ht_met_lep_norm");
+    h_jet1__csv         = ctx.declare_event_output<float>           ("jet1_csv");
+    h_jet2__csv         = ctx.declare_event_output<float>           ("jet2_csv");
+    h_njets             = ctx.declare_event_output<int>             ("njets");
+    h_DRpt              = ctx.declare_event_output<float>           ("DRpt");
+    h_lep1__pTrel_jet_norm = ctx.declare_event_output<float>         ("lep1__pTrel_jet_norm");
+    //h_MET__pz_norm         = ctx.declare_event_output<float>         ("MET__pz_norm");
+    h_jet1__M         = ctx.declare_event_output<float>("jet1_m");
+    h_jet2__M         = ctx.declare_event_output<float>("jet2_m");
+    //h_d12             = ctx.declare_event_output<float>("d12");
+    h_s11             = ctx.declare_event_output<float>("s11");
+    h_s12             = ctx.declare_event_output<float>("s12");
+    h_s13             = ctx.declare_event_output<float>("s13");
+    h_s22             = ctx.declare_event_output<float>("s22");
+    h_s23             = ctx.declare_event_output<float>("s23");
+    h_s33             = ctx.declare_event_output<float>("s33");
+    h_sphericity      = ctx.declare_event_output<float>("sphericity");
+    h_aplanarity      = ctx.declare_event_output<float>("aplanarity");
+    
+    // BDT  evaluation
+    
+    //h_wjets_bdtresponse = ctx.declare_event_output<float>("wjets_bdtresponse");
+    TMVA::Tools::Instance();
+    reader_wjets = new TMVA::Reader();
+    reader_wjets->AddVariable("DRpt", &mva_DRpt_norm);
+    reader_wjets->AddVariable("ht_met_lep_norm", &mva_ht_met_lep_norm);
+    reader_wjets->AddVariable("lep1__minDR_norm", &mva_lep1__minDR_jet);
+    reader_wjets->AddVariable("lep1__pTrel_jet_norm", &mva_ptrel_norm);
+    reader_wjets->AddVariable("jet1_csv", &mva_j1CSV);
+    reader_wjets->AddVariable("jet1_pt", &mva_jet1pt_norm);
+    reader_wjets->AddVariable("jet1_m", &mva_jet1m_norm);
+    reader_wjets->AddVariable("jet2_csv", &mva_j2CSV);
+    reader_wjets->AddVariable("jet2_pt",&mva_jet2pt_norm);
+    reader_wjets->AddVariable("jet2_m", &mva_jet2m_norm);
+    reader_wjets->AddVariable("njets", &mva_njets);
+    reader_wjets->AddVariable("s11", &mva_s11);
+    reader_wjets->AddVariable("s12", &mva_s12);
+    reader_wjets->AddVariable("s13", &mva_s13);
+    reader_wjets->AddVariable("s22", &mva_s22);
+    reader_wjets->AddVariable("s23", &mva_s23);
+    reader_wjets->AddVariable("s33", &mva_s33);
+    reader_wjets->AddVariable("aplanarity", &mva_aplanarity);
+    reader_wjets->AddVariable("sphericity", &mva_sphericity);
+    //reader->AddVariable("rec_chi2", &mva_rec_chi2);
+    reader_wjets->BookMVA("BDT method", "/nfs/dust/cms/user/dansand/UHH2_2015/CMSSW_7_6_3/src/UHH2/ZprimeSemiLeptonic/weights_upca/TMVAClassification_BDT.weights.xml");
+  //wjets bdt  histograms
+  
+
+   
 
   ///Homemade ttbar MVA input
   met_pt = -100;met_phi = -100;  
@@ -886,7 +997,7 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
   tt_dEtaIn = ctx.declare_event_output<float>("lep_dEtaIn");
   tt_dPhiIn = ctx.declare_event_output<float>("lep_dPhiIn");
 
-  top_qjets_volatility = -100; top_tau1 = -100; top_tau2 = -100; top_tau3 = -100; top_mvahiggsdiscr = -100; top_prunedmass = -100; top_softdropmass = -100;
+  /*top_qjets_volatility = -100; top_tau1 = -100; top_tau2 = -100; top_tau3 = -100; top_mvahiggsdiscr = -100; top_prunedmass = -100; top_softdropmass = -100;
   tt_qjets_volatility = ctx.declare_event_output<float>("top_qjets_volatility");
   tt_tau1 = ctx.declare_event_output<float>("top_tau1");
   tt_tau2 = ctx.declare_event_output<float>("top_tau2");
@@ -894,42 +1005,45 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
   tt_mvahiggsdiscr = ctx.declare_event_output<float>("top_mvahiggsdiscr");
   tt_prunedmass = ctx.declare_event_output<float>("top_prunedmass");
   tt_softdropmass = ctx.declare_event_output<float>("top_softdropmass");
-
+   */
   /// Homemade ttbar MVA output for QCD
   // --- Create the Reader object
   TMVA_response = -100;
+  WJets_TMVA_response = -100;
+  wjets_TMVA_response = ctx.declare_event_output<float>("wjets_TMVA_response");
   tt_TMVA_response = ctx.declare_event_output<float>("TMVA_response"); // this var is ploted in hist class, should always be filled
   if(channel_ == elec){
-    reader.reset(new TMVA::Reader( "!Color:!Silent" ));
-    reader->AddVariable("lep_pt/Mttbar", &varMVA[0]);  
-    reader->AddVariable("fabs(lep_eta)", &varMVA[1]);
-    reader->AddVariable("lep_eta_err",&varMVA[2]); 
-    reader->AddVariable("lep_pt_err", &varMVA[3]);
-    reader->AddVariable("lep_full5x5_e5x5", &varMVA[4]);
-    reader->AddVariable("lep_dB", &varMVA[5]);
-    reader->AddVariable("fabs(lep_dPhiIn)", &varMVA[6]);
-    reader->AddVariable("fabs(lep_dEtaInSeed)", &varMVA[7]);
-    reader->AddVariable("lep_hcalOverEcal", &varMVA[8]);
-    reader->AddVariable("lep_dr03TkSumPt", &varMVA[9]);
-    reader->AddVariable("lep_effArea", &varMVA[10]);
-    reader->AddVariable("lep1__minDR_jet", &varMVA[11]);
-    reader->AddVariable("fabs(ljet_eta)", &varMVA[12]);
-    reader->AddVariable("ljet_CSV", &varMVA[13]);
-    reader->AddVariable("fabs(fjet2_eta)", &varMVA[14]);
-    reader->AddVariable("fjet2_pt/Mttbar", &varMVA[15]);
-    reader->AddVariable("jet2_CSV", &varMVA[16]);
-    reader->AddVariable("met_pt/MwT", &varMVA[17]);                                                                                 
-    reader->AddVariable("ttagN", &varMVA[18]);                                                                                             
-    reader->AddVariable("btagN", &varMVA[19]); 
+    reader_qcd.reset(new TMVA::Reader( "!Color:!Silent" ));
+    reader_qcd->AddVariable("lep_pt/Mttbar", &varMVA[0]);  
+    reader_qcd->AddVariable("fabs(lep_eta)", &varMVA[1]);
+    reader_qcd->AddVariable("lep_eta_err",&varMVA[2]); 
+    reader_qcd->AddVariable("lep_pt_err", &varMVA[3]);
+    reader_qcd->AddVariable("lep_full5x5_e5x5", &varMVA[4]);
+    reader_qcd->AddVariable("lep_dB", &varMVA[5]);
+    reader_qcd->AddVariable("fabs(lep_dPhiIn)", &varMVA[6]);
+    reader_qcd->AddVariable("fabs(lep_dEtaInSeed)", &varMVA[7]);
+    reader_qcd->AddVariable("lep_hcalOverEcal", &varMVA[8]);
+    reader_qcd->AddVariable("lep_dr03TkSumPt", &varMVA[9]);
+    reader_qcd->AddVariable("lep_effArea", &varMVA[10]);
+    reader_qcd->AddVariable("lep1__minDR_jet", &varMVA[11]);
+    reader_qcd->AddVariable("fabs(ljet_eta)", &varMVA[12]);
+    reader_qcd->AddVariable("ljet_CSV", &varMVA[13]);
+    reader_qcd->AddVariable("fabs(fjet2_eta)", &varMVA[14]);
+    reader_qcd->AddVariable("fjet2_pt/Mttbar", &varMVA[15]);
+    reader_qcd->AddVariable("jet2_CSV", &varMVA[16]);
+    reader_qcd->AddVariable("met_pt/MwT", &varMVA[17]);                                                                                 
+    reader_qcd->AddVariable("ttagN", &varMVA[18]);                                                                                             
+    reader_qcd->AddVariable("btagN", &varMVA[19]); 
   
 
     //  TString dir    = "/afs/desy.de/user/k/karavdia/xxl/af-cms/CMSSW_7_6_3_patch2/src/UHH2/ZprimeSemiLeptonic/TMVA_weights/76X/"; //ToDo: make it param in xml
-  TString dir    = "/afs/desy.de/user/k/karavdia/CMSSW_8_0_8_patch1/src/UHH2/ZprimeSemiLeptonic/TMVA_weights/76X/"; //ToDo: make it param in xml
+  TString dir    = "/nfs/dust/cms/user/dansand/UHH2_2015/80X_BDT_v1/CMSSW_8_0_8/src/UHH2/ZprimeSemiLeptonic/TMVA_weights/76X/"; //ToDo: make it param in xml
    methodName = "BDT::BDTG";
    TString weightfile = dir + "Homemade_TTbarMVAClassification_BDTG_DataDriven_MET40_20vras.weights.xml";
   // methodName = "MLP::MLPBNN";
   // TString weightfile = dir + "Homemade_TTbarMVAClassification_MLPBNN_DataDrivenMET30_24Vars_N-22_N+2.weights.xml";
-  reader->BookMVA(methodName, weightfile);
+  reader_qcd->BookMVA(methodName, weightfile);
+
   }
   // ////
 }
@@ -937,6 +1051,7 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
 bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
 
   event.set(tt_TMVA_response, 0);//set some dummy initial value
+  event.set(wjets_TMVA_response,0);
   //// COMMON MODULES
 
 
@@ -1160,7 +1275,7 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
   for(const auto& tj : *event.topjets) if(ttag_ID_(tj, event)) ++ttagN;
 
   //TEST
-  top_qjets_volatility = -100; top_tau1 = -100; top_tau2 = -100; top_tau3 = -100; 
+  /*top_qjets_volatility = -100; top_tau1 = -100; top_tau2 = -100; top_tau3 = -100; 
   top_mvahiggsdiscr = -100; top_prunedmass = -100; top_softdropmass = -100;
   if(ttagN>0){
     for(const auto& tj : *event.topjets){
@@ -1180,11 +1295,11 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
   event.set(tt_mvahiggsdiscr,top_mvahiggsdiscr); 
   event.set(tt_prunedmass,top_prunedmass); 
   event.set(tt_softdropmass,top_softdropmass); 
-
+  
   //TEST for QCD studies
   // veto on 2-ttag events
   if(!(ttagN <= 1)) return false;
-
+  */
   /******************/
 
   /* btagN counters */
@@ -1210,8 +1325,8 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
   }
 
   const int btagN = jetbtagN + subjbtagN;
-
-  const std::string btag_posx = (btagN >= 2 ? "b2" : (btagN >= 1 ? "b1" : "b0"));
+  const std::string btag_posx =  ( pass_ttagevt ? "b" :(btagN == 0 ? "b0": "b1"));
+  //const std::string btag_posx = (btagN >= 2 ? "b2" : (btagN >= 1 ? "b1" : "b0"));
   /******************/
 
   /* CHI2 selection */
@@ -1610,10 +1725,10 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
   varMVA[18] = ttagN;
   varMVA[19] = btagN;
   
-  // if(ljet_CSV<-1. || lep_pt_err>1000.) 
-  //    return false; // do NOT use unphysical data
-  TMVA_response = reader->EvaluateMVA(methodName);
-  //  if(TMVA_response<0.5) return false; //BDTG_DATADriven_MET40_20vars
+  if(ljet_CSV<-1. || lep_pt_err>1000.) 
+     return false; // do NOT use unphysical data
+  TMVA_response = reader_qcd->EvaluateMVA(methodName);
+  if(TMVA_response<0.5) return false; //BDTG_DATADriven_MET40_20vars
   event.set(tt_TMVA_response, TMVA_response);
   //std::cout<<"TMVA_response = "<<TMVA_response<<std::endl;
     }
@@ -1621,7 +1736,120 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
   //   return false;
 
   //  if(TMVA_response<0.9) return false; //MLP
+      float s11 = 0.0;
+    float s12 = 0.0;
+    float s13 = 0.0;
+    float s22 = 0.0;
+    float s23 = 0.0;
+    float s33 = 0.0;
+    float s11d = 0.0;
+    float s12d = 0.0;
+    float s13d = 0.0;
+    float s22d = 0.0;
+    float s23d = 0.0;
+    float s33d =0.0;
+    float mag = 0.0;
+    float ht=0.0;
+    for (auto jet : *event.jets){
+        if (jet.pt()>30.0){
+            ht+=jet.pt();
+            s11d += jet.v4().Px()*jet.v4().Px();
+            mag  += (jet.v4().Px()*jet.v4().Px()+jet.v4().Py()*jet.v4().Py()+jet.v4().Pz()*jet.v4().Pz());
+            s22d += jet.v4().Py()*jet.v4().Py();
+            s12d += jet.v4().Px()*jet.v4().Py();
+            s13d += jet.v4().Px()*jet.v4().Pz();
+            s23d += jet.v4().Py()*jet.v4().Pz();
+            s33d += jet.v4().Pz()*jet.v4().Pz();
+        }
+    }
+    s11 =  s11d/mag;
+    s12 =  s12d/mag;
+    s13 =  s13d/mag;
+    s22 =  s22d/mag;
+    s23 =  s23d/mag;
+    s33 =  s33d/mag;
+    const float j1CSV    = event.jets->at(0).btag_combinedSecondaryVertex();
+    const float j2CSV    = event.jets->at(1).btag_combinedSecondaryVertex();
+    const float njets    = event.jets->size();
+    const float j1M      = jet1__p4.M();
+    const float j2M      = jet2__p4.M();
+    
+    const float jet1pt_norm = jet1__p4.Pt()/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    const float jet2pt_norm = jet2__p4.Pt()/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    const float ptrel_norm =  lep1__pTrel_jet/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    const float htmetlep_norm = ht+lep1__p4.Pt()/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    const float DRpt_norm = lep1__minDR_jet*jet1__p4.Pt()/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+  if(!pass_chi2)
+    return false;
 
+  //  if(TMVA_response<0.9) return false; //MLP
+    event.set(h_DRpt, DRpt_norm);//1
+    event.set(h_ht__metlep_norm, htmetlep_norm);//2
+    event.set(h_lep1__minDR_norm, lep1__minDR_jet);//3
+    event.set(h_lep1__pTrel_jet_norm, ptrel_norm);//4
+    event.set(h_jet1__pt,jet1pt_norm);//5
+    event.set(h_jet2__pt,jet2pt_norm);//6
+    event.set(h_jet1__csv, j1CSV );//7
+    event.set(h_jet2__csv, j2CSV );//8
+    event.set(h_njets, njets); //9
+    event.set(h_jet1__M,  j1M/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M())); //10
+    event.set(h_jet2__M,  j2M/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M())); //11
+# define N 3
+    double d[N];
+    double sph_mat[N*N] = {
+        s11, s12, s13,
+        s12, s22, s23,
+        s13, s23, s33
+    };
+    double v[N*N];
+    int n = 3;
+    int it_max = 100;
+    jacobi_eigenvalue( n, sph_mat, it_max, v, d, it_num, rot_num);
+    const float sphericity = 1.5*(d[1]+d[2]);
+    const float aplanarity = 1.5*d[0];
+    event.set(h_aplanarity, aplanarity);
+    event.set(h_sphericity, sphericity);
+    event.set(h_s11,s11);
+    event.set(h_s12,s12);
+    event.set(h_s13,s13);
+    event.set(h_s22,s22);
+    event.set(h_s23,s23);
+    event.set(h_s33,s33);
+    
+    
+    mva_jet1pt_norm = jet1pt_norm;
+    mva_jet2pt_norm = jet2pt_norm;
+    mva_ptrel_norm =  ptrel_norm;
+    mva_ht_met_lep_norm = htmetlep_norm;
+    mva_jet1m_norm = j1M/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    mva_jet2m_norm = j2M/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    mva_DRpt_norm = DRpt_norm;
+    mva_lep1__minDR_jet = lep1__minDR_jet;
+    mva_j1CSV = j1CSV;
+    mva_j2CSV = j2CSV;
+    mva_njets = njets;
+    mva_s11 = s11;
+    mva_s12 = s12;
+    mva_s13 = s13;
+    mva_s22 = s22;
+    mva_s23 = s23;
+    mva_s33 = s33;
+    mva_aplanarity= aplanarity;
+    mva_sphericity = sphericity;
+    //bdtresponse = reader_wjets->EvaluateMVA("BDT method");
+    WJets_TMVA_response = reader_wjets->EvaluateMVA("BDT method");
+   // event.set(h_wjets_bdtresponse,bdtresponse);
+    event.set(wjets_TMVA_response, WJets_TMVA_response);
+    if (pass_chi2 && lepN==1 && WJets_TMVA_response > -0.025){
+        HFolder("chi2_bdt")          ->fill(event);
+        HFolder("chi2_bdt__ttbar")->fill(event);
+        
+        HFolder("chi2_bdt__"+ttag_posx+btag_posx)          ->fill(event);
+        HFolder("chi2_bdt__"+ttag_posx+btag_posx+"__ttbar")->fill(event);
+        
+        
+        
+    }
 
   event.set(tt_ev_weight,event.weight);
   if(!event.isRealData){
