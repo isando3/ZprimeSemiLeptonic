@@ -56,38 +56,38 @@ void EffyTTbarRECOHists::init(){
   book_TH1F("gen_blep__pz"       , 120, -1200, 1200);
   book_TH1F("gen_blep__cosThetaX", 40, -1, 1);
 
-  book_TH1F("rec_chi2", 200, 0, 600);
+  book_TH1F("rec_chi2", 40, 0, 200);
   book_TH2F("rec_chi2__VS__rec_ttbar__M", 300, 0, 600, 125, 0, 5000);
 
-  book_TH1F("rec_ttbar__M"          , 125, 0, 5000);
-  book_TH1F("rec_ttbar__pt"         , 150, 0, 3000);
+  book_TH1F("rec_ttbar__M"          , 40, 0, 4000);
+  book_TH1F("rec_ttbar__pt"         , 30, 0, 3000);
   book_TH1F("rec_ttbar__gen_DM"     , 120, -600, 600);
   book_TH1F("rec_ttbar__gen_Dpt"    , 120, -600, 600);
   book_TH1F("rec_ttbar__gen_DM_pct" , 120, -1.2, 1.2);
   book_TH1F("rec_ttbar__gen_Dpt_pct", 120, -1.2, 1.2);
 
-  book_TH1F("rec_thad__M"            , 360, 0, 360);
-  book_TH1F("rec_thad__Mgro"         , 360, 0, 360);
-  book_TH1F("rec_thad__Mpru"         , 360, 0, 360);
-  book_TH1F("rec_thad__Msdp"         , 360, 0, 360);
-  book_TH1F("rec_thad__pt"           , 180, 0, 1800);
+  book_TH1F("rec_thad__M"            , 72, 0, 360);
+  book_TH1F("rec_thad__Mgro"         , 72, 0, 360);
+  book_TH1F("rec_thad__Mpru"         , 72, 0, 360);
+  book_TH1F("rec_thad__Msdp"         , 72, 0, 360);
+  book_TH1F("rec_thad__pt"           , 90, 0, 1800);
   book_TH1F("rec_thad__jetN"         , 7, 0, 7);
-  book_TH1F("rec_thad__gen_DM"       , 240, -120, 120);
-  book_TH1F("rec_thad__gen_DMgro"    , 240, -120, 120);
-  book_TH1F("rec_thad__gen_DMpru"    , 240, -120, 120);
-  book_TH1F("rec_thad__gen_DMsdp"    , 240, -120, 120);
-  book_TH1F("rec_thad__gen_Dpt"      , 120, -600, 600);
-  book_TH1F("rec_thad__gen_Deta"     , 120, -1.2, 1.2);
-  book_TH1F("rec_thad__gen_Dphi"     , 60, 0, 3.15);
-  book_TH1F("rec_thad__gen_DR"       , 60, 0, 3);
-  book_TH1F("rec_thad__gen_DM_pct"   , 120, -1.2, 1.2);
-  book_TH1F("rec_thad__gen_DMgro_pct", 120, -1.2, 1.2);
-  book_TH1F("rec_thad__gen_DMpru_pct", 120, -1.2, 1.2);
-  book_TH1F("rec_thad__gen_DMsdp_pct", 120, -1.2, 1.2);
-  book_TH1F("rec_thad__gen_Dpt_pct"  , 120, -1.2, 1.2);
+  book_TH1F("rec_thad__gen_DM"       , 24, -120, 120);
+  book_TH1F("rec_thad__gen_DMgro"    , 24, -120, 120);
+  book_TH1F("rec_thad__gen_DMpru"    , 24, -120, 120);
+  book_TH1F("rec_thad__gen_DMsdp"    , 24, -120, 120);
+  book_TH1F("rec_thad__gen_Dpt"      , 12, -600, 600);
+  book_TH1F("rec_thad__gen_Deta"     , 12, -1.2, 1.2);
+  book_TH1F("rec_thad__gen_Dphi"     , 21, 0, 3.15);
+  book_TH1F("rec_thad__gen_DR"       , 30, 0, 3);
+  book_TH1F("rec_thad__gen_DM_pct"   , 24, -1.2, 1.2);
+  book_TH1F("rec_thad__gen_DMgro_pct", 24, -1.2, 1.2);
+  book_TH1F("rec_thad__gen_DMpru_pct", 24, -1.2, 1.2);
+  book_TH1F("rec_thad__gen_DMsdp_pct", 24, -1.2, 1.2);
+  book_TH1F("rec_thad__gen_Dpt_pct"  , 24, -1.2, 1.2);
 
-  book_TH1F("rec_tlep__M"          , 360, 0, 360);
-  book_TH1F("rec_tlep__pt"         , 180, 0, 1800);
+  book_TH1F("rec_tlep__M"          , 72, 0, 360);
+  book_TH1F("rec_tlep__pt"         , 90, 0, 1800);
   book_TH1F("rec_tlep__px"         , 120, -1200, 1200);
   book_TH1F("rec_tlep__py"         , 120, -1200, 1200);
   book_TH1F("rec_tlep__pz"         , 120, -1200, 1200);
@@ -98,13 +98,13 @@ void EffyTTbarRECOHists::init(){
   book_TH1F("rec_tlep__gen_Dpy"    , 120, -600, 600);
   book_TH1F("rec_tlep__gen_Dpz"    , 120, -600, 600);
   book_TH1F("rec_tlep__gen_Deta"   , 120, -1.2, 1.2);
-  book_TH1F("rec_tlep__gen_Dphi"   , 60, 0, 3.15);
-  book_TH1F("rec_tlep__gen_DR"     , 60, 0, 3);
-  book_TH1F("rec_tlep__gen_DM_pct" , 120, -1.2, 1.2);
-  book_TH1F("rec_tlep__gen_Dpt_pct", 120, -1.2, 1.2);
-  book_TH1F("rec_tlep__gen_Dpx_pct", 120, -1.2, 1.2);
-  book_TH1F("rec_tlep__gen_Dpy_pct", 120, -1.2, 1.2);
-  book_TH1F("rec_tlep__gen_Dpz_pct", 120, -1.2, 1.2);
+  book_TH1F("rec_tlep__gen_Dphi"   , 21, 0, 3.15);
+  book_TH1F("rec_tlep__gen_DR"     , 39, 0, 3);
+  book_TH1F("rec_tlep__gen_DM_pct" , 24 -1.2, 1.2);
+  book_TH1F("rec_tlep__gen_Dpt_pct", 24, -1.2, 1.2);
+  book_TH1F("rec_tlep__gen_Dpx_pct", 24, -1.2, 1.2);
+  book_TH1F("rec_tlep__gen_Dpy_pct", 24, -1.2, 1.2);
+  book_TH1F("rec_tlep__gen_Dpz_pct", 24, -1.2, 1.2);
 
   book_TH1F("rec_tops__DR" , 60, 0, 6);
   book_TH1F("rec_tops__Dpt", 180, -450, 450);
@@ -128,10 +128,10 @@ void EffyTTbarRECOHists::init(){
   book_TH1F("rec_Wlep__gen_Dpy_pct", 120, -1.2, 1.2);
   book_TH1F("rec_Wlep__gen_Dpz_pct", 120, -1.2, 1.2);
 
-  book_TH1F("rec_lep__pt"            , 120, 0, 1200);
-  book_TH1F("rec_lep__eta"           , 60, -6, 6);
-  book_TH1F("rec_lep__phi"           , 60, -3.15, 3.15);
-  book_TH1F("rec_lep__cosThetaX"     , 40, -1, 1);
+  book_TH1F("rec_lep__pt"            , 90, 0, 900);
+  book_TH1F("rec_lep__eta"           , 36, -6, 6);
+  book_TH1F("rec_lep__phi"           , 35, -3.15, 3.15);
+  book_TH1F("rec_lep__cosThetaX"     , 10, -1, 1);
   book_TH1F("rec_lep__gen_DR"        , 60, 0, .06);
   book_TH1F("rec_lep__gen_Dpt"       , 60, -150, 150);
   book_TH1F("rec_lep__gen_Deta"      , 60, -.06, .06);

@@ -137,11 +137,11 @@ void TTbarLJHists::init(){
   // TOPJET
   book_TH1F("topjetN", 20, 0, 20);
 
-  book_TH1F("topjet1__pt" , 180,  0, 1800);
+  book_TH1F("topjet1__pt" , 50,  0, 1000);
   book_TH1F("topjet1__eta", 60, -3, 3);
   book_TH1F("topjet1__phi", 60, -3.15, 3.15);
   book_TH1F("topjet1__CSV", 120, 0, 1.2);
-  book_TH1F("topjet2__pt" , 180,  0, 1800);
+  book_TH1F("topjet2__pt" , 50,  0, 1000);
   book_TH1F("topjet2__eta", 60, -3, 3);
   book_TH1F("topjet2__phi", 60, -3.15, 3.15);
   book_TH1F("topjet2__CSV", 120, 0, 1.2);
@@ -156,15 +156,15 @@ void TTbarLJHists::init(){
     book_TH1F("toptag1"+eta+"__pt"          , 90, 0, 900);
     book_TH1F("toptag1"+eta+"__eta"         , 60, -3, 3);
     book_TH1F("toptag1"+eta+"__phi"         , 60, -3.15, 3.15);
-    book_TH1F("toptag1"+eta+"__M"           , 360, 90, 450);
-    book_TH1F("toptag1"+eta+"__Mgro"        , 360, 90, 450);
-    book_TH1F("toptag1"+eta+"__Mpru"        , 360, 90, 450);
-    book_TH1F("toptag1"+eta+"__Msdp"        , 360, 90, 450);
+    book_TH1F("toptag1"+eta+"__M"           , 90, 90, 450);
+    book_TH1F("toptag1"+eta+"__Mgro"        , 90, 90, 450);
+    book_TH1F("toptag1"+eta+"__Mpru"        , 90, 90, 450);
+    book_TH1F("toptag1"+eta+"__Msdp"        , 90, 90, 450);
     book_TH1F("toptag1"+eta+"__mmin"        , 40, 0, 200);
     book_TH1F("toptag1"+eta+"__tau2"        , 24, 0, 1.2);
     book_TH1F("toptag1"+eta+"__tau3"        , 24, 0, 1.2);
     book_TH1F("toptag1"+eta+"__tau32"       , 24, 0, 1.2);
-    book_TH1F("toptag1"+eta+"__CSV"         , 120, 0, 1.2);
+    book_TH1F("toptag1"+eta+"__CSV"         , 60, 0, 1.2);
     book_TH1F("toptag1"+eta+"__subjN"       , 4, 2, 6);
     book_TH1F("toptag1"+eta+"__subj1__pt"   , 90, 0, 900);
     book_TH1F("toptag1"+eta+"__subj1__eta"  , 60, -3, 3);
@@ -181,8 +181,8 @@ void TTbarLJHists::init(){
   book_TH1F("toptag2__pt"          , 90, 0, 900);
   book_TH1F("toptag2__eta"         , 60, -3, 3);
   book_TH1F("toptag2__phi"         , 60, -3.15, 3.15);
-  book_TH1F("toptag2__M"           , 360, 90, 450);
-  book_TH1F("toptag2__CSV"         , 120, 0, 1.2);
+  book_TH1F("toptag2__M"           , 90, 90, 450);
+  book_TH1F("toptag2__CSV"         , 60, 0, 1.2);
 
   // MET
   book_TH1F("met__pt" , 90, 0, 900);
