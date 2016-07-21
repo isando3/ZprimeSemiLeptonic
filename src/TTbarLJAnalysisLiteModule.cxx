@@ -532,13 +532,14 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
   jet1_sel.reset(new NJetSelection(1, -1, JetId(PtEtaCut(jet1_pt, 2.4))));
 
   const std::string& trigger = ctx.get("trigger", "NULL");
-  if(trigger != "NULL") trigger_sel.reset(new TriggerSelection(trigger));
+  if(trigger != "NULL" && !isMC) trigger_sel.reset(new TriggerSelection(trigger));
   else                  trigger_sel.reset(new uhh2::AndSelection(ctx));
  
+  if     (channel_ == elec){
   const std::string& trigger2 = ctx.get("trigger2", "NULL");
   if(trigger2 != "NULL" && !isMC) trigger2_sel.reset(new TriggerSelection(trigger2));
   else                  trigger2_sel.reset(new uhh2::AndSelection(ctx));
- 
+  }
   met_sel  .reset(new METCut  (MET   , uhh2::infinity));
   htlep_sel.reset(new HTlepCut(HT_lep, uhh2::infinity));
 
@@ -1219,12 +1220,18 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
   ////
 
   //// HLT selection
-  const bool pass_trigger = trigger_sel->passes(event);
+  
+  if     (channel_ == elec){
+      const bool pass_trigger = trigger_sel->passes(event);
   //  if(!pass_trigger) return false;
-  const bool pass_trigger2 = trigger2_sel->passes(event);
+      const bool pass_trigger2 = trigger2_sel->passes(event);
   //if(!pass_trigger && event.isRealData) return false;
-  //
-  if(!(pass_trigger||pass_trigger2) && event.isRealData) return false; //apply only on data
+      if(!(pass_trigger||pass_trigger2) && event.isRealData) return false; //apply only on data
+  }
+  else if (channel_ == muon){
+       const bool pass_trigger = trigger_sel->passes(event);
+       if(!pass_trigger && event.isRealData) return false;
+  } 
   if(lepN == 1) HFolder("trigger")->fill(event);
   ////
 
