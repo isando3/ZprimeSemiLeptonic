@@ -1064,8 +1064,8 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
 
 bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
 
-  //event.set(tt_TMVA_response, 0);//set some dummy initial value
-  //event.set(wjets_TMVA_response,0);
+  event.set(tt_TMVA_response, 0);//set some dummy initial value
+  event.set(wjets_TMVA_response,0);
   //// COMMON MODULES
 
 
@@ -1752,7 +1752,7 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
   if(ljet_CSV<-1. || lep_pt_err>1000.) 
      return false; // do NOT use unphysical data
   TMVA_response = reader_qcd->EvaluateMVA(methodName);
-  if(TMVA_response<0.5) return false; //BDTG_DATADriven_MET40_20vars
+  if(TMVA_response<-0.5) return false; //BDTG_DATADriven_MET40_20vars
   event.set(tt_TMVA_response, TMVA_response);
   //std::cout<<"TMVA_response = "<<TMVA_response<<std::endl;
     }
@@ -1865,7 +1865,8 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
     WJets_TMVA_response = reader_wjets->EvaluateMVA("BDT method");
    // event.set(h_wjets_bdtresponse,bdtresponse);
     event.set(wjets_TMVA_response, WJets_TMVA_response);
-    if (pass_chi2 && lepN==1 && WJets_TMVA_response > -0.025){
+    //if (pass_chi2 && lepN==1 && WJets_TMVA_response > 0){
+    if (pass_chi2 && lepN==1){
         HFolder("chi2_bdt")          ->fill(event);
         HFolder("chi2_bdt__ttbar")->fill(event);
         
