@@ -33,6 +33,7 @@
 #include <UHH2/ZprimeSemiLeptonic/include/SF_elec.h>
 #include <UHH2/ZprimeSemiLeptonic/include/SF_ttagging.h>
 #include <UHH2/ZprimeSemiLeptonic/include/SF_WjetsREWGT.h>
+#include <UHH2/ZprimeSemiLeptonic/include/jacobi_eigenvalue.h>
 
 #include <TMVA/Tools.h>
 #include <TMVA/Reader.h>
@@ -310,11 +311,40 @@ class TTbarLJAnalysisLiteModule : public ModuleBASE {
   std::unique_ptr<TMVA::Reader> reader;
   TString methodName;
   float varMVA[20];
-
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    //            ___ ___  __      __   __  ___               __          __        ___  __
+    // |  |    | |__   |  /__`    |__) |  \  |     \  /  /\  |__) |  /\  |__) |    |__  /__`
+    // |/\| \__/ |___  |  .__/    |__) |__/  |      \/  /~~\ |  \ | /~~\ |__) |___ |___ .__/
+    Event::Handle<float>          h_s11;                //1
+    Event::Handle<float>          h_s12;                //2
+    Event::Handle<float>          h_s13;                //3
+    Event::Handle<float>          h_s22;                //4
+    Event::Handle<float>          h_s23;                //5
+    Event::Handle<float>          h_s33;                //6
+    Event::Handle<float>        h_aplanarity;           //7
+    Event::Handle<float>        h_sphericity;           //8
+    Event::Handle<float>    h_jet1_pt;                 //9
+     Event::Handle<float>    h_jet2_pt;                 //10
+     Event::Handle<float>    h_lep1__pTrel_jet_norm;     //11
+    Event::Handle<float>    h_ht_met_lep_norm;          //12
+     Event::Handle<float>    h_DRpt;                     //15
+     Event::Handle<int>      h_njets;                    //16
+     Event::Handle<float>    h_jet1_m;                  //17
+     Event::Handle<float>    h_jet2_m;                  //18
+     Event::Handle<float>    h_lep1__minDR_norm;   //19
+   int it_num;
+  int rot_num;
+   
   //For usage of run dependent muonHLT Effs
   double lumi_tot;
   double lumi1;
   double lumi2;
+    
+   
+  
 
   ////
 };
@@ -1758,6 +1788,84 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
   event.set(tt_TMVA_response, TMVA_response);
   //std::cout<<"TMVA_response = "<<TMVA_response<<std::endl;
     }
+    
+   //FILL HERE THE BDT WJETS VARIABLES
+    float s11 = 0.0;
+    float s12 = 0.0;
+    float s13 = 0.0;
+    float s22 = 0.0;
+    float s23 = 0.0;
+    float s33 = 0.0;
+    float s11d = 0.0;
+    float s12d = 0.0;
+    float s13d = 0.0;
+    float s22d = 0.0;
+    float s23d = 0.0;
+    float s33d =0.0;
+    float mag = 0.0;
+    float ht=0.0;
+    for (auto jet : *event.jets){
+        if (jet.pt()>30.0){
+            ht+=jet.pt();
+            s11d += jet.v4().Px()*jet.v4().Px();
+            mag  += (jet.v4().Px()*jet.v4().Px()+jet.v4().Py()*jet.v4().Py()+jet.v4().Pz()*jet.v4().Pz());
+            s22d += jet.v4().Py()*jet.v4().Py();
+            s12d += jet.v4().Px()*jet.v4().Py();
+            s13d += jet.v4().Px()*jet.v4().Pz();
+            s23d += jet.v4().Py()*jet.v4().Pz();
+            s33d += jet.v4().Pz()*jet.v4().Pz();
+        }
+    }
+    s11 =  s11d/mag;
+    s12 =  s12d/mag;
+    s13 =  s13d/mag;
+    s22 =  s22d/mag;
+    s23 =  s23d/mag;
+    s33 =  s33d/mag;
+    //const float j1CSV    = event.jets->at(0).btag_combinedSecondaryVertex();
+   // const float j2CSV    = event.jets->at(1).btag_combinedSecondaryVertex();
+    const float njets    = event.jets->size();
+    const float j1M      = jet1__p4.M();
+    const float j2M      = jet2__p4.M();
+    
+    const float jet1pt_norm = jet1__p4.Pt()/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    const float jet2pt_norm = jet2__p4.Pt()/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    const float ptrel_norm =  lep1__pTrel_jet/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    const float htmetlep_norm = ht+lep1__p4.Pt()/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+    const float DRpt_norm = lep1__minDR_jet*jet1__p4.Pt()/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M());
+
+    event.set(h_DRpt, DRpt_norm);//1
+     event.set(h_ht_met_lep_norm, htmetlep_norm);//2
+     event.set(h_lep1__minDR_norm, lep1__minDR_jet);//3
+     event.set(h_lep1__pTrel_jet_norm, ptrel_norm);//4
+     event.set(h_jet1_pt,jet1pt_norm);//5
+    event.set(h_jet2_pt,jet2pt_norm);//6
+     event.set(h_njets, njets); //9
+     event.set(h_jet1_m,  j1M/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M())); //10
+     event.set(h_jet2_m,  j2M/((rec_ttbar->top_v4()+rec_ttbar->antitop_v4()).M())); //11
+    
+# define N 3
+    double d[N];
+    double sph_mat[N*N] = {
+        s11, s12, s13,
+        s12, s22, s23,
+        s13, s23, s33
+    };
+    double v[N*N];
+    int n = 3;
+    int it_max = 100;
+    jacobi_eigenvalue( n, sph_mat, it_max, v, d, it_num, rot_num);
+    const float sphericity = 1.5*(d[1]+d[2]);
+    const float aplanarity = 1.5*d[0];
+    event.set(h_aplanarity, aplanarity);
+    event.set(h_sphericity, sphericity);
+    event.set(h_s11,s11);
+    event.set(h_s12,s12);
+    event.set(h_s13,s13);
+    event.set(h_s22,s22);
+    event.set(h_s23,s23);
+    event.set(h_s33,s33);
+    
    if(!pass_chi2)
     return false;
 
@@ -1782,4 +1890,5 @@ bool TTbarLJAnalysisLiteModule::process(uhh2::Event& event){
 }
 
 UHH2_REGISTER_ANALYSIS_MODULE(TTbarLJAnalysisLiteModule)
+
 
