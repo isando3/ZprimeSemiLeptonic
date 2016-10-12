@@ -18,6 +18,39 @@ TTbarLJHists::TTbarLJHists(uhh2::Context& ctx, const std::string& dirname):
 
   init();
   tt_tmva_response = ctx.get_handle<float>("TMVA_response");
+  wjets_tmva_response = ctx.get_handle<float>("WJets_TMVA_response");
+  h_s33 = ctx.get_handle<float>("s33");
+  h_njets = ctx.get_handle<float>("njets");
+  h_jet1_csv = ctx.get_handle<float>("jet1_csv"); 
+  h_jet2_csv = ctx.get_handle<float>("jet2_csv"); 
+  h_DRpt = ctx.get_handle<float>("DRpt");
+  //h_jet1_pt = ctx.get_handle<float>("jet1_pt"); 
+  h_jet2_pt = ctx.get_handle<float>("jet2_pt");
+  h_lep1__pTrel_jet_norm = ctx.get_handle<float>("lep1__pTrel_jet_norm");
+  h_lep1__minDR_norm = ctx.get_handle<float>("lep1__minDR_norm");
+  h_jet1_m = ctx.get_handle<float>("jet1_m");
+  //h_jet2_m = ctx.get_handle<float>("jet2_m");
+  h_ht_met_lep_norm = ctx.get_handle<float>("ht_met_lep_norm"); 
+ 
+ /* h_lep_eta_err = ctx.get_handle<float>("lep_eta_err");
+  h_lep_pt  = ctx.get_handle<float>("lep_pt");
+  //h_lep_eta  = ctx.get_handle<float>("lep_eta");
+  h_lep_pt_err = ctx.get_handle<float>("lep_pt_err");
+  h_lep_full5x5_e5x5  = ctx.get_handle<float>("lep_full5x5_e5x5");
+  h_lep_dB  = ctx.get_handle<float>("lep_dB");
+ 
+  h_lep_dPhiIn  = ctx.get_handle<float>("lep_dPhiIn");
+  h_lep_dEtaInSeed  = ctx.get_handle<float>("lep_dEtaInSeed");
+  h_lep_hcalOverEcal  = ctx.get_handle<float>("lep_hcalOverEcal");
+  h_lep_dr03TkSumPt  = ctx.get_handle<float>("lep_dr03TkSumPt");
+  h_lep_effArea  = ctx.get_handle<float>("lep_effArea");
+  h_ljet_eta = ctx.get_handle<float>("ljet_eta");
+  h_ljet_CSV = ctx.get_handle<float>("ljet_CSV");
+  h_fjet2_eta = ctx.get_handle<float>("fjet2_eta");
+  h_fjet2_pt  = ctx.get_handle<float>("fjet2_pt");
+  h_jet2_CSV  = ctx.get_handle<float>("jet2_CSV");
+  h_met_pt  = ctx.get_handle<float>("met_pT"); 
+ */
 }
 
 TTbarLJHists::TTbarLJHists(uhh2::Context& ctx, const std::string& dirname, const TopJetId& ttag_id, const float dr__ttag_jet):
@@ -25,6 +58,37 @@ TTbarLJHists::TTbarLJHists(uhh2::Context& ctx, const std::string& dirname, const
 
   init();
   tt_tmva_response = ctx.get_handle<float>("TMVA_response");
+  wjets_tmva_response = ctx.get_handle<float>("WJets_TMVA_response");
+  h_s33 = ctx.get_handle<float>("s33");
+  h_njets = ctx.get_handle<float>("njets");
+  h_jet1_csv = ctx.get_handle<float>("jet1_csv");
+  h_jet2_csv = ctx.get_handle<float>("jet2_csv");
+  h_DRpt = ctx.get_handle<float>("DRpt");
+  //h_jet1_pt = ctx.get_handle<float>("jet1_pt");     
+  h_jet2_pt = ctx.get_handle<float>("jet2_pt");
+  h_lep1__pTrel_jet_norm = ctx.get_handle<float>("lep1__pTrel_jet_norm");
+  h_lep1__minDR_norm = ctx.get_handle<float>("lep1__minDR_jet");
+  h_ht_met_lep_norm = ctx.get_handle<float>("ht_met_lep_norm");
+  h_jet1_m = ctx.get_handle<float>("jet1_m");
+  //h_jet2_m = ctx.get_handle<float>("jet1_m"); 
+  /*h_lep_eta_err = ctx.get_handle<float>("lep_eta_err");
+  h_lep_pt  = ctx.get_handle<float>("lep_pt");
+  //h_lep_eta  = ctx.get_handle<float>("lep_eta");
+  h_lep_pt_err = ctx.get_handle<float>("lep_pt_err");
+  h_lep_full5x5_e5x5  = ctx.get_handle<float>("lep_full5x5_e5x5");
+  h_lep_dB  = ctx.get_handle<float>("lep_dB");
+  h_lep_dPhiIn  = ctx.get_handle<float>("lep_dPhiIn");
+  h_lep_dEtaInSeed  = ctx.get_handle<float>("lep_dEtaInSeed");
+  h_lep_hcalOverEcal  = ctx.get_handle<float>("lep_hcalOverEcal");
+  h_lep_dr03TkSumPt  = ctx.get_handle<float>("lep_dr03TkSumPt");
+  h_lep_effArea  = ctx.get_handle<float>("lep_effArea");
+  h_ljet_eta = ctx.get_handle<float>("ljet_eta");
+  h_ljet_CSV = ctx.get_handle<float>("ljet_CSV");
+  h_fjet2_eta = ctx.get_handle<float>("fjet2_eta");
+  h_fjet2_pt  = ctx.get_handle<float>("fjet2_pt");
+  h_jet2_CSV  = ctx.get_handle<float>("jet2_CSV");
+  h_met_pt  = ctx.get_handle<float>("met_pT"); 
+  */
 }
 
 void TTbarLJHists::init(){
@@ -149,8 +213,37 @@ void TTbarLJHists::init(){
   wlep__pt = book<TH1F>("wlep__pt","W_{leptonic} p_{T} [GeV]", 90, 0, 900);
   wlep__Mt = book<TH1F>("wlep__Mt","W_{leptonic} M_{T} [GeV]", 360, 0,  360);
   TMVA_response = book<TH1F>("TMVA_response", "TMVA response", 50,-1.2,1.8);
-
-  return;
+  WJets_TMVA_response = book<TH1F>("WJets_TMVA_response", "WJets TMVA response", 50,-1.2,1.8);
+  /*lep_eta_err = book<TH1F>("lep_eta_err","lep_eta_err",20, 0., 0.002);
+  lep_pt = book<TH1F>("lep_pt","lep_pt", 25, 0.,2.5);
+  lep_pt_err = book<TH1F>("lep_pt_err","lep_pt_err", 20, 0., 0.001);
+  lep_full5x5_e5x5 = book<TH1F>("lep_full5x5_e5x5","lep_full5x5_e5x5",35,0,3500);
+  lep_dB = book<TH1F>("lep_dB","lep_dB", 20, 0., 0.04);
+  lep_dPhiIn = book<TH1F>("lep_dPhiIn", "lep_dPhiIn",20, 0., 0.0002);
+  lep_dEtaInSeed = book<TH1F>("lep_dEtaInSeed","lep_dEtaInSeed", 40, 0., 0.025);
+  lep_hcalOverEcal = book<TH1F>("lep_hcalOverEcal","lep_hcalOverEcal",100, 0., 0.06 );
+  lep_dr03TkSumPt = book<TH1F>("lep_dr03TkSumPt","lep_dr03TkSumPt", 20, 0., 10);
+  lep_effArea = book<TH1F>("lep_effArea","lep_effArea",30, 0., 0.30);
+  ljet_eta = book<TH1F>("ljet_eta", "ljet_eta", 30, 0., 3.0);
+  ljet_CSV = book<TH1F>("ljet_CSV", "ljet_CSV", 20, -1.0, 1.0);
+  fjet2_eta = book<TH1F>("fjet2_eta", "fjet2_eta", 30, 0., 3.0);
+  fjet2_pt = book<TH1F>("fjet2_pt","fjet2_pt", 40, 0., 4.0);
+  met_pT = book<TH1F>("met_pT","met_pT",20, 0, 200);   
+  jet2_CSV = book<TH1F>("jet2_CSV","jet2_CSV",20, -1.0, 1.0);
+  */
+  s33 = book<TH1F>("s33", "s33", 20, 0, 1);
+  DRpt= book<TH1F>("DRpt", "DRpt", 20, 0, 1);
+  jet1_csv = book<TH1F>("jet1_csv", "jet1_csv", 20, 0, 1);
+  jet2_csv = book<TH1F>("jet2_csv", "jet2_csv", 20, 0, 1);
+  njets  = book<TH1F>("njets", "njets", 15, 0, 15);
+  //jet1_pt = book<TH1F>("jet1_pt","jet1_pt",20,0,1);
+  jet2_pt = book<TH1F>("jet2_pt","jet2_pt",20,0,1); 
+  jet1_m = book<TH1F>("jet1_m","jet1_m",20,0,1);
+  //jet2_m = book<TH1F>("jet2_m","jet2_m",20,0,1);
+  ht_met_lep_norm = book<TH1F>("ht_met_lep_norm","ht_met_lep_norm",80,0,4000);
+  lep1__minDR_norm = book<TH1F>("lep1__minDR_norm","lep1__minDR_norm",20,0,1);
+  lep1__pTrel_jet_norm =  book<TH1F>("lep1__pTrel_jet_norm", "lep1__pTrel_jet_norm",20,0,1);
+  return ; 
 }
 
 void TTbarLJHists::fill(const uhh2::Event& event){
@@ -402,5 +495,37 @@ void TTbarLJHists::fill(const uhh2::Event& event){
   }
 
   TMVA_response->Fill(event.get(tt_tmva_response), weight);
+  WJets_TMVA_response->Fill(event.get(wjets_tmva_response), weight);
+  jet1_m->Fill(event.get(h_jet1_m),weight);
+  //jet1_pt->Fill(event.get(h_jet1_pt),weight);
+  jet1_csv->Fill(event.get(h_jet1_csv),weight);
+  jet2_csv->Fill(event.get(h_jet2_csv),weight);
+  //jet2_m->Fill(event.get(h_jet2_m),weight);
+  jet2_pt->Fill(event.get(h_jet2_pt),weight);
+  DRpt->Fill(event.get(h_DRpt),weight);
+  ht_met_lep_norm->Fill(event.get(h_ht_met_lep_norm),weight);
+  lep1__minDR_norm->Fill(event.get(h_lep1__minDR_norm),weight);
+  lep1__pTrel_jet_norm->Fill(event.get(h_lep1__pTrel_jet_norm),weight);
+  s33->Fill(event.get(h_s33),weight);
+  njets->Fill(event.get(h_njets),weight);
+  /*lep_eta_err->Fill(event.get(h_lep_eta_err), weight);
+  lep_pt->Fill(event.get(h_lep_pt),weight);
+  //lep_eta->Fill(event.get(h_lep_eta),weight);
+  lep_pt_err->Fill(event.get(h_lep_pt_err),weight);
+  lep_full5x5_e5x5->Fill(event.get(h_lep_full5x5_e5x5),weight);
+  lep_dB->Fill(event.get(h_lep_dB),weight);
+  
+  lep_dPhiIn->Fill(event.get(h_lep_dPhiIn),weight);
+  lep_dEtaInSeed->Fill(event.get(h_lep_dEtaInSeed),weight);
+  lep_hcalOverEcal->Fill(event.get(h_lep_hcalOverEcal),weight);
+  lep_dr03TkSumPt->Fill(event.get(h_lep_dr03TkSumPt),weight);
+  lep_effArea->Fill(event.get(h_lep_effArea),weight);
+  ljet_eta->Fill(event.get(h_ljet_eta),weight);
+  ljet_CSV->Fill(event.get(h_ljet_CSV),weight);
+  fjet2_eta->Fill(event.get(h_fjet2_eta),weight);
+  fjet2_pt->Fill(event.get(h_fjet2_pt),weight);
+  jet2_CSV->Fill(event.get(h_jet2_CSV),weight);
+  met_pT->Fill(event.get(h_met_pt),weight);
+  */ 
   return;
 }

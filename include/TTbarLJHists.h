@@ -44,11 +44,49 @@ class TTbarLJHists : public uhh2::Hists {
   TH1F *toptag2__tau32,*toptag2__CSV,*toptag2__subjN;
   TH1F *met__pt,*met__phi,*wlep__ht,*wlep__pt,*wlep__Mt;
   TH1F* TMVA_response;
-
+  //TH1F *lep_eta_err;
+  //TH1F *lep_pt;
+  //*lep_eta,
+  //TH1F *lep_pt_err;
+  //TH1F *lep_full5x5_e5x5;
+  //TH1F *lep_dB; 
+  //TH1F *lep_dPhiIn,*lep_dEtaInSeed,*lep_hcalOverEcal,*lep_dr03TkSumPt,*lep_effArea, *ljet_eta,*ljet_CSV,*fjet2_eta,*fjet2_pt,*jet2_CSV,*met_pT;
+   TH1F* WJets_TMVA_response;
+   TH1F *jet1_m, *jet2_pt, *jet1_csv, *jet2_csv, *DRpt, *ht_met_lep_norm, *s33, *lep1__minDR_norm, *lep1__pTrel_jet_norm, *njets;
+  // uhh2::Event::Handle<float> wjets_tmva_response;
+  //TH1F *lep_eta_err,*lep_pt, *lep_eta, *lep_pt_err, *lep_full5x5_e5x5, *lep_dB, *lep_dPhiIn, *lep_dEtaInSeed, *lep_hcalOverEcal, *lep_dr03TkSumPt, *lep_effArea, *ljet_eta, *ljet_CSV, *fjet2_eta, *fjet2_pt, *jet2_CSV, *met_pT; 
   //  virtual void init() override;
   void init();
 
  private:
   uhh2::Event::Handle<float> tt_tmva_response;
-
+  uhh2::Event::Handle<float> wjets_tmva_response;
+  uhh2::Event::Handle<float> h_DRpt;
+  uhh2::Event::Handle<float> h_jet1_m;
+  uhh2::Event::Handle<float> h_jet1_csv;
+  uhh2::Event::Handle<float> h_jet2_pt;
+  uhh2::Event::Handle<float> h_jet2_csv;
+  uhh2::Event::Handle<float> h_njets;
+  uhh2::Event::Handle<float> h_ht_met_lep_norm;
+  uhh2::Event::Handle<float> h_s33;
+  uhh2::Event::Handle<float> h_lep1__minDR_norm;
+  uhh2::Event::Handle<float> h_lep1__pTrel_jet_norm;
+  //uhh2::Event::Handle<float> h_lep_eta_err;
+  //uhh2::Event::Handle<float> h_lep_pt;
+  //uhh2::Event::Handle<float> h_lep_eta;
+  //uhh2::Event::Handle<float> h_lep_pt_err;
+  //uhh2::Event::Handle<float> h_lep_full5x5_e5x5;
+  //uhh2::Event::Handle<float> h_lep_dB;
+  //uhh2::Event::Handle<float> h_lep_dPhiIn;
+  //uhh2::Event::Handle<float> h_lep_dEtaInSeed;
+  //uhh2::Event::Handle<float> h_lep_hcalOverEcal;
+  //uhh2::Event::Handle<float> h_lep_dr03TkSumPt;
+  //uhh2::Event::Handle<float> h_lep_effArea;
+  //uhh2::Event::Handle<float> h_ljet_eta;
+  //uhh2::Event::Handle<float> h_ljet_CSV;
+  //uhh2::Event::Handle<float> h_fjet2_eta;
+  //uhh2::Event::Handle<float> h_fjet2_pt;
+  //uhh2::Event::Handle<float> h_jet2_CSV;
+  //uhh2::Event::Handle<float> h_met_pt;
+  
 };
