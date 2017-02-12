@@ -17,20 +17,25 @@ TTbarLJHists::TTbarLJHists(uhh2::Context& ctx, const std::string& dirname):
   Hists(ctx, dirname), tjet_ID_(TopTagID_NO()), tjet_minDR_jet_(0.) {
 
   init();
-  tt_tmva_response = ctx.get_handle<float>("TMVA_response");
-  wjets_tmva_response = ctx.get_handle<float>("WJets_TMVA_response");
-  h_s33 = ctx.get_handle<float>("s33");
-  h_njets = ctx.get_handle<float>("njets");
-  h_jet1_csv = ctx.get_handle<float>("jet1_csv"); 
-  h_jet2_csv = ctx.get_handle<float>("jet2_csv"); 
-  h_DRpt = ctx.get_handle<float>("DRpt");
+//mask them all for preselection
+ ////tt_tmva_response = ctx.get_handle<float>("TMVA_response");
+ ////wjets_tmva_response = ctx.get_handle<float>("WJets_TMVA_response"); 
+ //// H_Rec_chi2 = ctx.get_handle<float>("H_Rec_chi2");
+  
+
+
+ //// h_s33 = ctx.get_handle<float>("s33");
+ //// h_njets = ctx.get_handle<float>("njets");
+ //// h_jet1_csv = ctx.get_handle<float>("jet1_csv"); 
+////  h_jet2_csv = ctx.get_handle<float>("jet2_csv"); 
+////  h_DRpt = ctx.get_handle<float>("DRpt");
   //h_jet1_pt = ctx.get_handle<float>("jet1_pt"); 
-  h_jet2_pt = ctx.get_handle<float>("jet2_pt");
-  h_lep1__pTrel_jet_norm = ctx.get_handle<float>("lep1__pTrel_jet_norm");
-  h_lep1__minDR_norm = ctx.get_handle<float>("lep1__minDR_norm");
-  h_jet1_m = ctx.get_handle<float>("jet1_m");
+ //// h_jet2_pt = ctx.get_handle<float>("jet2_pt");
+ //// h_lep1__pTrel_jet_norm = ctx.get_handle<float>("lep1__pTrel_jet_norm");
+ //// h_lep1__minDR_norm = ctx.get_handle<float>("lep1__minDR_norm");
+  ////h_jet1_m = ctx.get_handle<float>("jet1_m");
   //h_jet2_m = ctx.get_handle<float>("jet2_m");
-  h_ht_met_lep_norm = ctx.get_handle<float>("ht_met_lep_norm"); 
+ //// h_ht_met_lep_norm = ctx.get_handle<float>("ht_met_lep_norm"); 
  
  /* h_lep_eta_err = ctx.get_handle<float>("lep_eta_err");
   h_lep_pt  = ctx.get_handle<float>("lep_pt");
@@ -57,19 +62,20 @@ TTbarLJHists::TTbarLJHists(uhh2::Context& ctx, const std::string& dirname, const
   Hists(ctx, dirname), tjet_ID_(ttag_id), tjet_minDR_jet_(dr__ttag_jet) {
 
   init();
-  tt_tmva_response = ctx.get_handle<float>("TMVA_response");
-  wjets_tmva_response = ctx.get_handle<float>("WJets_TMVA_response");
-  h_s33 = ctx.get_handle<float>("s33");
-  h_njets = ctx.get_handle<float>("njets");
-  h_jet1_csv = ctx.get_handle<float>("jet1_csv");
-  h_jet2_csv = ctx.get_handle<float>("jet2_csv");
-  h_DRpt = ctx.get_handle<float>("DRpt");
+ ////tt_tmva_response = ctx.get_handle<float>("TMVA_response"); 
+ ////wjets_tmva_response = ctx.get_handle<float>("WJets_TMVA_response");
+//// H_Rec_chi2 = ctx.get_handle<float>("H_Rec_chi2"); 
+ ////h_s33 = ctx.get_handle<float>("s33");
+ ////h_njets = ctx.get_handle<float>("njets");
+//// h_jet1_csv = ctx.get_handle<float>("jet1_csv");
+//// h_jet2_csv = ctx.get_handle<float>("jet2_csv");
+//// h_DRpt = ctx.get_handle<float>("DRpt");
   //h_jet1_pt = ctx.get_handle<float>("jet1_pt");     
-  h_jet2_pt = ctx.get_handle<float>("jet2_pt");
-  h_lep1__pTrel_jet_norm = ctx.get_handle<float>("lep1__pTrel_jet_norm");
-  h_lep1__minDR_norm = ctx.get_handle<float>("lep1__minDR_jet");
-  h_ht_met_lep_norm = ctx.get_handle<float>("ht_met_lep_norm");
-  h_jet1_m = ctx.get_handle<float>("jet1_m");
+//// h_jet2_pt = ctx.get_handle<float>("jet2_pt");
+ ////h_lep1__pTrel_jet_norm = ctx.get_handle<float>("lep1__pTrel_jet_norm");
+ ////h_lep1__minDR_norm = ctx.get_handle<float>("lep1__minDR_jet");
+ ////h_ht_met_lep_norm = ctx.get_handle<float>("ht_met_lep_norm");
+//// h_jet1_m = ctx.get_handle<float>("jet1_m");
   //h_jet2_m = ctx.get_handle<float>("jet1_m"); 
   /*h_lep_eta_err = ctx.get_handle<float>("lep_eta_err");
   h_lep_pt  = ctx.get_handle<float>("lep_pt");
@@ -99,33 +105,33 @@ void TTbarLJHists::init(){
   pvN = book<TH1F>("pvN","N_{PV}", 60, 0, 60);
 
   // MUON
-  muoN = book<TH1F>("muoN", "N mouns"               , 20, 0, 20);
+  muoN = book<TH1F>("muoN", "N mouns"               , 10, 0, 10);
   muo1__charge = book<TH1F>("muo1__charge","muon charge"        , 5, -2, 3);
-  muo1__pt = book<TH1F>("muo1__pt","muon p_{T} [GeV]"            , 90, 0, 900);
+  muo1__pt = book<TH1F>("muo1__pt","muon p_{T} [GeV]"            , 25, 0, 500);
   muo1__eta = book<TH1F>("muo1__eta","muon #eta"            ,60,-3,3);
   muo1__phi = book<TH1F>("muo1__phi","muon #phi"           , 60, -3.15, 3.15);
-  muo1__minDR_jet = book<TH1F>("muo1__minDR_jet", "#Delta R_{min}(#mu,jet)"     , 60, 0, 6);
-  muo1__pTrel_jet = book<TH1F>("muo1__pTrel_jet", "p_{T,rel}(#mu,jet) [GeV]"    , 100, 0, 500);
+  muo1__minDR_jet = book<TH1F>("muo1__minDR_jet", "#Delta R_{min}(#mu,jet)"     , 30, 0, 3.2);
+  muo1__pTrel_jet = book<TH1F>("muo1__pTrel_jet", "p_{T,rel}(#mu,jet) [GeV]"    , 25, 0, 500);
 
   muo2__charge = book<TH1F>("muo2__charge","muon charge"         , 5, -2, 3);
-  muo2__pt = book<TH1F>("muo2__pt","muon p_{T}[GeV]"             , 90, 0, 900);
+  muo2__pt = book<TH1F>("muo2__pt","muon p_{T}[GeV]"             , 25, 0, 500);
   muo2__eta = book<TH1F>("muo2__eta","muon #eta"            ,60,-3,3);
   muo2__phi = book<TH1F>("muo2__phi","muon #phi"            , 60, -3.15, 3.15);
-  muo2__minDR_jet = book<TH1F>("muo2__minDR_jet", "#Delta R_{min}(#mu,jet)"      , 60, 0, 6);
-  muo2__pTrel_jet = book<TH1F>("muo2__pTrel_jet", "p_{T,rel}(#mu,jet) [GeV]"      , 100, 0, 500);
+  muo2__minDR_jet = book<TH1F>("muo2__minDR_jet", "#Delta R_{min}(#mu,jet)"      , 30, 0, 3.2);
+  muo2__pTrel_jet = book<TH1F>("muo2__pTrel_jet", "p_{T,rel}(#mu,jet) [GeV]"      , 25, 0, 500);
 
   // ELECTRON
   eleN = book<TH1F>("eleN", "N electrons"               , 20, 0, 20);
   ele1__class = book<TH1F>("ele1__class", "electron class" , 6, -0.5, 5.5);
   ele1__charge = book<TH1F>("ele1__charge", "electron charge"         , 5, -2, 3);
-  ele1__pt = book<TH1F>("ele1__pt", "electron p_{T} [GeV]"             , 90, 0, 900);
+  ele1__pt = book<TH1F>("ele1__pt", "electron p_{T} [GeV]"             , 25, 0, 500);
   ele1__ptError = book<TH1F>("ele1__ptError","electron #sigma(p_{T}) [GeV]"         , 36, 0, 720);
   ele1__eta = book<TH1F>("ele1__eta","electron #eta"            ,60,-3,3);
   ele1__etaError = book<TH1F>("ele1__etaError","electron #sigma(#eta)"        , 60, 0, 1.);
   ele1__phi = book<TH1F>("ele1__phi", "electron #phi"            , 60, -3.15, 3.15);
   ele1__phiError = book<TH1F>("ele1__phiError", "electron #sigma(#phi)"            , 60, 0, 1.);
-  ele1__minDR_jet = book<TH1F>("ele1__minDR_jet","#Delta R_{min}(e,jet)"      , 60, 0, 6);
-  ele1__pTrel_jet = book<TH1F>("ele1__pTrel_jet", "p_{T,rel}(e,jet)[GeV]"     , 100, 0, 500);
+  ele1__minDR_jet = book<TH1F>("ele1__minDR_jet","#Delta R_{min}(e,jet)"      , 30, 0, 3.2);
+  ele1__pTrel_jet = book<TH1F>("ele1__pTrel_jet", "p_{T,rel}(e,jet)[GeV]"     , 25, 0, 500);
 
   ele2__class = book<TH1F>("ele2__class", "electron class" , 6, -0.5, 5.5);
   ele2__charge = book<TH1F>("ele2__charge", "electron charge"         , 5, -2, 3);
@@ -144,19 +150,19 @@ void TTbarLJHists::init(){
   jetN__CSVM = book<TH1F>("jetN__CSVM","N jets with Medium CSV"        , 10, 0, 10);
   jetN__CSVT = book<TH1F>("jetN__CSVT", "N jets with Tight CSV"        , 10, 0, 10);
 
-  jet1__pt = book<TH1F>("jet1__pt", "jet p_{T} [GeV]" , 90, 0, 900);
+  jet1__pt = book<TH1F>("jet1__pt", "jet p_{T} [GeV]" , 50, 0, 1000);
   jet1__eta = book<TH1F>("jet1__eta", "jet #eta",60,-3,3);
   jet1__phi = book<TH1F>("jet1__phi", "jet #phi", 60, -3.15, 3.15);
   jet1__M = book<TH1F>("jet1__M", "jet mass"  , 360, 0, 360);
   jet1__CSV = book<TH1F>("jet1__CSV","CSV", 60, 0, 1.2);
 
-  jet2__pt = book<TH1F>("jet2__pt", "jet p_{T} [GeV]" , 90, 0, 900);
+  jet2__pt = book<TH1F>("jet2__pt", "jet p_{T} [GeV]" , 50, 0, 1000);
   jet2__eta = book<TH1F>("jet2__eta", "jet #eta",60,-3,3);
   jet2__phi = book<TH1F>("jet2__phi", "jet #phi", 60, -3.15, 3.15);
   jet2__M = book<TH1F>("jet2__M", "jet mass [GeV]"  , 360, 0, 360);
   jet2__CSV = book<TH1F>("jet2__CSV","CSV", 60, 0, 1.2);
 
-  jet3__pt = book<TH1F>("jet3__pt", "jet p_{T}[GeV]" , 50, 200, 1700);
+  jet3__pt = book<TH1F>("jet3__pt", "jet p_{T}[GeV]" , 50, 0, 1000);
   jet3__eta = book<TH1F>("jet3__eta", "jet #eta",60,-3,3);
   jet3__phi = book<TH1F>("jet3__phi", "jet #phi", 60, -3.15, 3.15);
   jet3__M = book<TH1F>("jet3__M", "jet mass"  , 360, 0, 360);
@@ -165,17 +171,17 @@ void TTbarLJHists::init(){
   // TOPJET
   topjetN = book<TH1F>("topjetN","N topjets", 10, 0, 10);
 
-  topjet1__pt = book<TH1F>("topjet1__pt","topjet p_{T} [GeV]" , 50, 200, 1700);
+  topjet1__pt = book<TH1F>("topjet1__pt","topjet p_{T} [GeV]" , 50, 200, 1500);
   topjet1__eta = book<TH1F>("topjet1__eta","topjet #eta", 30, -3, 3);
   topjet1__phi = book<TH1F>("topjet1__phi","topjet #phi", 30, -3.15, 3.15);
   topjet1__CSV = book<TH1F>("topjet1__CSV", "topjet CSV", 30, 0, 1.2);
-  topjet1__Msdp = book<TH1F>("topjet1__Msdp","topjet softdrop mass [GeV]", 35, 0, 350);
+  topjet1__Msdp = book<TH1F>("topjet1__Msdp","topjet softdrop mass [GeV]", 10, 100, 350);
   topjet1__tau32 = book<TH1F>("topjet1__tau32","jet #tau_{32}", 24, 0, 1.2);
   topjet2__pt = book<TH1F>("topjet2__pt","topjet p_{T} [GeV]" , 50, 200, 1700);
   topjet2__eta = book<TH1F>("topjet2__eta","topjet #eta", 30, -3, 3);
   topjet2__phi = book<TH1F>("topjet2__phi","topjet #phi", 30, -3.15, 3.15);
   topjet2__CSV = book<TH1F>("topjet2__CSV", "topjet CSV", 30, 0, 1.2);
-  topjet2__Msdp = book<TH1F>("topjet2__Msdp","topjet softdrop mass [GeV]", 35, 0, 350);
+  topjet2__Msdp = book<TH1F>("topjet2__Msdp","topjet softdrop mass [GeV]", 10, 100, 350);
   topjet2__tau32 = book<TH1F>("topjet2__tau32","topjet #tau_{32}", 24, 0, 1.2);
 
 
@@ -187,10 +193,10 @@ void TTbarLJHists::init(){
   toptag1__pt = book<TH1F>("toptag1__pt","top-tag jet p_{T} [GeV]"          , 50, 200, 1700);
   toptag1__eta = book<TH1F>("toptag1__eta", "top-tag jet #eta"         , 30, -3, 3);
   toptag1__phi = book<TH1F>("toptag1__phi","top-tag jet #phi"         , 30, -3.15, 3.15);
-  toptag1__M  = book<TH1F>("toptag1__M", "top-tag jet mass [GeV]"           , 360, 90, 450);
-  toptag1__Mgro = book<TH1F>("toptag1__Mgro", "top-tag jet groomed mass [GeV]"        , 35, 0, 350);
-  toptag1__Mpru  = book<TH1F>("toptag1__Mpru", "top-tag jet pruned mass [GeV]"        , 35, 0, 350);
-  toptag1__Msdp  = book<TH1F>("toptag1__Msdp", "top-tag jet softdrop mass [GeV]"        , 35, 0, 350);
+  toptag1__M  = book<TH1F>("toptag1__M", "top-tag jet mass [GeV]"           , 15, 100, 350);
+  toptag1__Mgro = book<TH1F>("toptag1__Mgro", "top-tag jet groomed mass [GeV]"        , 15, 100, 350);
+  toptag1__Mpru  = book<TH1F>("toptag1__Mpru", "top-tag jet pruned mass [GeV]"        , 15, 100, 350);
+  toptag1__Msdp  = book<TH1F>("toptag1__Msdp", "top-tag jet softdrop mass [GeV]"        , 15, 100, 350);
   toptag1__tau32  = book<TH1F>("toptag1__tau32", "top-tag jet #tau_{32}"       , 24, 0, 1.2);
   toptag1__CSV  = book<TH1F>("toptag1__CSV","top-tag jet CSV"        , 60, 0, 1.2);
   toptag1__subjN  = book<TH1F>("toptag1__subjN", "top-tag jet N subjettiness"       , 4, 2, 6);
@@ -199,21 +205,22 @@ void TTbarLJHists::init(){
   toptag2__eta = book<TH1F>("toptag2__eta", "top-tag jet #eta"         , 30, -3, 3);
   toptag2__phi = book<TH1F>("toptag2__phi","top-tag jet #phi"         , 30, -3.15, 3.15);
   toptag2__M  = book<TH1F>("toptag2__M", "top-tag jet mass [GeV]"           , 360, 90, 450);
-  toptag2__Mgro = book<TH1F>("toptag2__Mgro", "top-tag jet groomed mass [GeV]"        , 35, 0, 350);
-  toptag2__Mpru  = book<TH1F>("toptag2__Mpru", "top-tag jet pruned mass [GeV]"        , 35, 0, 350);
-  toptag2__Msdp  = book<TH1F>("toptag2__Msdp", "top-tag jet softdrop mass [GeV]"        , 35, 0, 350);
+  toptag2__Mgro = book<TH1F>("toptag2__Mgro", "top-tag jet groomed mass [GeV]"        , 15, 100, 350);
+  toptag2__Mpru  = book<TH1F>("toptag2__Mpru", "top-tag jet pruned mass [GeV]"        , 15, 100, 350);
+  toptag2__Msdp  = book<TH1F>("toptag2__Msdp", "top-tag jet softdrop mass [GeV]"        , 15, 100, 350);
   toptag2__tau32  = book<TH1F>("toptag2__tau32", "top-tag jet #tau_{32}"       , 24, 0, 1.2);
   toptag2__CSV  = book<TH1F>("toptag2__CSV","top-tag jet CSV"        , 60, 0, 1.2);
   toptag2__subjN  = book<TH1F>("toptag2__subjN", "top-tag jet N subjettiness"       , 4, 2, 6);
 
   // MET
-  met__pt = book<TH1F>("met__pt", "MET [GeV]" , 60, 0, 800);
+  met__pt = book<TH1F>("met__pt", "MET [GeV]" , 40, 0, 800);
   met__phi = book<TH1F>("met__phi", "MET #phi", 60, -3.15, 3.15);
   wlep__ht = book<TH1F>("wlep__ht","W_{leptonic} H_{T} [GeV]", 90, 0, 900);
   wlep__pt = book<TH1F>("wlep__pt","W_{leptonic} p_{T} [GeV]", 90, 0, 900);
   wlep__Mt = book<TH1F>("wlep__Mt","W_{leptonic} M_{T} [GeV]", 360, 0,  360);
-  TMVA_response = book<TH1F>("TMVA_response", "TMVA response", 50,-1.2,1.8);
-  WJets_TMVA_response = book<TH1F>("WJets_TMVA_response", "WJets TMVA response", 50,-1.2,1.8);
+  ////TMVA_response = book<TH1F>("TMVA_response", "TMVA response", 50,-1.2,1.8);
+  ////WJets_TMVA_response = book<TH1F>("WJets_TMVA_response", "WJets TMVA response", 50,-1.2,1.8);
+  ////WJets_TMVA_rec_chi2 = book<TH2F>("WJets_TMVA_rec_chi2", "BDT_{WJets}response vs #Chi^{2}",50,0,500,20,-1,1);
   /*lep_eta_err = book<TH1F>("lep_eta_err","lep_eta_err",20, 0., 0.002);
   lep_pt = book<TH1F>("lep_pt","lep_pt", 25, 0.,2.5);
   lep_pt_err = book<TH1F>("lep_pt_err","lep_pt_err", 20, 0., 0.001);
@@ -231,18 +238,18 @@ void TTbarLJHists::init(){
   met_pT = book<TH1F>("met_pT","met_pT",20, 0, 200);   
   jet2_CSV = book<TH1F>("jet2_CSV","jet2_CSV",20, -1.0, 1.0);
   */
-  s33 = book<TH1F>("s33", "s33", 20, 0, 1);
-  DRpt= book<TH1F>("DRpt", "DRpt", 20, 0, 1);
-  jet1_csv = book<TH1F>("jet1_csv", "jet1_csv", 20, 0, 1);
-  jet2_csv = book<TH1F>("jet2_csv", "jet2_csv", 20, 0, 1);
-  njets  = book<TH1F>("njets", "njets", 15, 0, 15);
+  ////s33 = book<TH1F>("s33", "s33", 20, 0, 1);
+  ////DRpt= book<TH1F>("DRpt", "DRpt", 20, 0, 1);
+  ////jet1_csv = book<TH1F>("jet1_csv", "jet1_csv", 20, 0, 1);
+  ////jet2_csv = book<TH1F>("jet2_csv", "jet2_csv", 20, 0, 1);
+  ////njets  = book<TH1F>("njets", "njets", 15, 0, 15);
   //jet1_pt = book<TH1F>("jet1_pt","jet1_pt",20,0,1);
-  jet2_pt = book<TH1F>("jet2_pt","jet2_pt",20,0,1); 
-  jet1_m = book<TH1F>("jet1_m","jet1_m",20,0,1);
+  ////jet2_pt = book<TH1F>("jet2_pt","jet2_pt",20,0,1); 
+  ////jet1_m = book<TH1F>("jet1_m","jet1_m",20,0,1);
   //jet2_m = book<TH1F>("jet2_m","jet2_m",20,0,1);
-  ht_met_lep_norm = book<TH1F>("ht_met_lep_norm","ht_met_lep_norm",80,0,4000);
-  lep1__minDR_norm = book<TH1F>("lep1__minDR_norm","lep1__minDR_norm",20,0,1);
-  lep1__pTrel_jet_norm =  book<TH1F>("lep1__pTrel_jet_norm", "lep1__pTrel_jet_norm",20,0,1);
+  ////ht_met_lep_norm = book<TH1F>("ht_met_lep_norm","ht_met_lep_norm",80,0,4000);
+  ////lep1__minDR_norm = book<TH1F>("lep1__minDR_norm","lep1__minDR_norm",20,0,1);
+  ////lep1__pTrel_jet_norm =  book<TH1F>("lep1__pTrel_jet_norm", "lep1__pTrel_jet_norm",20,0,1);
   return ; 
 }
 
@@ -494,20 +501,21 @@ void TTbarLJHists::fill(const uhh2::Event& event){
     wlep__Mt->Fill(sqrt(2*event.met->pt()*lep1->pt()*(1.-cos(uhh2::deltaPhi(*event.met, *lep1)))), weight);
   }
 
-  TMVA_response->Fill(event.get(tt_tmva_response), weight);
-  WJets_TMVA_response->Fill(event.get(wjets_tmva_response), weight);
-  jet1_m->Fill(event.get(h_jet1_m),weight);
+  ////TMVA_response->Fill(event.get(tt_tmva_response), weight);
+ //// WJets_TMVA_response->Fill(event.get(wjets_tmva_response), weight);
+  ////WJets_TMVA_rec_chi2->Fill(event.get(H_Rec_chi2),event.get(wjets_tmva_response), weight);
+  ////jet1_m->Fill(event.get(h_jet1_m),weight);
   //jet1_pt->Fill(event.get(h_jet1_pt),weight);
-  jet1_csv->Fill(event.get(h_jet1_csv),weight);
-  jet2_csv->Fill(event.get(h_jet2_csv),weight);
+  ////jet1_csv->Fill(event.get(h_jet1_csv),weight);
+  ////jet2_csv->Fill(event.get(h_jet2_csv),weight);
   //jet2_m->Fill(event.get(h_jet2_m),weight);
-  jet2_pt->Fill(event.get(h_jet2_pt),weight);
-  DRpt->Fill(event.get(h_DRpt),weight);
-  ht_met_lep_norm->Fill(event.get(h_ht_met_lep_norm),weight);
-  lep1__minDR_norm->Fill(event.get(h_lep1__minDR_norm),weight);
-  lep1__pTrel_jet_norm->Fill(event.get(h_lep1__pTrel_jet_norm),weight);
-  s33->Fill(event.get(h_s33),weight);
-  njets->Fill(event.get(h_njets),weight);
+  ////jet2_pt->Fill(event.get(h_jet2_pt),weight);
+ //// DRpt->Fill(event.get(h_DRpt),weight);
+ //// ht_met_lep_norm->Fill(event.get(h_ht_met_lep_norm),weight);
+  ////lep1__minDR_norm->Fill(event.get(h_lep1__minDR_norm),weight);
+  ////lep1__pTrel_jet_norm->Fill(event.get(h_lep1__pTrel_jet_norm),weight);
+  ////s33->Fill(event.get(h_s33),weight);
+  ////njets->Fill(event.get(h_njets),weight);
   /*lep_eta_err->Fill(event.get(h_lep_eta_err), weight);
   lep_pt->Fill(event.get(h_lep_pt),weight);
   //lep_eta->Fill(event.get(h_lep_eta),weight);

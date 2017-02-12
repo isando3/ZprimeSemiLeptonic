@@ -22,7 +22,7 @@
 #include <UHH2/ZprimeSemiLeptonic/include/ModuleBASE.h>
 #include <UHH2/ZprimeSemiLeptonic/include/ZprimeSemiLeptonicSelections.h>
 #include <UHH2/ZprimeSemiLeptonic/include/ZprimeSemiLeptonicUtils.h>
-#include <UHH2/ZprimeSemiLeptonic/include/TTbarLJHists.h>
+#include <UHH2/ZprimeSemiLeptonic/include/TTbarLJHistsSkimming.h>
 
 class TTbarLJSkimmingModule : public ModuleBASE {
 
@@ -83,16 +83,16 @@ TTbarLJSkimmingModule::TTbarLJSkimmingModule(uhh2::Context& ctx){
 
   if(keyword == "v01"){
     isQCDstudy = false;
-    ele_pt = 45.;
-    muon_pt = 45.;
+    ele_pt = 55.;
+    muon_pt = 55.;
     eleID  = ElectronID_Spring15_25ns_tight_noIso;
     //    eleID = ElectronID_MVAnotrig_Spring15_25ns_loose; //TEST 
     use_miniiso = false;
 
-    jet1_pt = 150.;
+    jet1_pt = 50.;
     jet2_pt =  50.;
 
-    MET     =  50.;
+    MET     =  20.;
     //MET     =   0.;
     HT_lep  =   0.;
   }
@@ -127,8 +127,8 @@ TTbarLJSkimmingModule::TTbarLJSkimmingModule(uhh2::Context& ctx){
   metfilters_sel->add<TriggerSelection>("1-good-vtx", "Flag_goodVertices");
   metfilters_sel->add<TriggerSelection>("eeBadScFilter", "Flag_eeBadScFilter");
   metfilters_sel->add<TriggerSelection>("globalTightHalo2016Filter", "Flag_globalTightHalo2016Filter"); //TEST will be available in 80X miniAODv2 
-  //  metfilters_sel->add<TriggerSelection>("chargedHadronTrackResolutionFilter", "Flag_chargedHadronTrackResolutionFilter"); 
-  // metfilters_sel->add<TriggerSelection>("muonBadTrackFilter", "Flag_muonBadTrackFilter");
+    metfilters_sel->add<TriggerSelection>("chargedHadronTrackResolutionFilter", "Flag_chargedHadronTrackResolutionFilter"); 
+   metfilters_sel->add<TriggerSelection>("muonBadTrackFilter", "Flag_muonBadTrackFilter");
   /**********************************/
 
   /* GEN M-ttbar selection [TTbar MC "0.<M^{gen}_{ttbar}(GeV)<700.] */
@@ -232,7 +232,8 @@ TTbarLJSkimmingModule::TTbarLJSkimmingModule(uhh2::Context& ctx){
 
   for(const auto& tag : htags_1){
 
-    book_HFolder(tag, new TTbarLJHists(ctx, tag));
+    //book_HFolder(tag, new TTbarLJHists(ctx, tag));
+     book_HFolder(tag, new TTbarLJHistsSkimming(ctx,tag));
   }
   ////
 
@@ -268,12 +269,13 @@ bool TTbarLJSkimmingModule::process(uhh2::Event& event){
   ////
 
   //// LEPTON selection
+
   muoSR_cleaner->process(event);
   sort_by_pt<Muon>(*event.muons);
 
-  eleSR_cleaner->process(event);
-  sort_by_pt<Electron>(*event.electrons);
-
+   eleSR_cleaner->process(event);
+   sort_by_pt<Electron>(*event.electrons);
+  //const bool pass_lep1 = (event.electrons->size() == 1);
   const bool pass_lep1 = ((event.muons->size() >= 1) || (event.electrons->size() >= 1));
   if(!pass_lep1) return false;
   HFolder("lep1")->fill(event);
