@@ -36,15 +36,36 @@ class TTbarLJSkimmingModule : public ModuleBASE {
   std::unique_ptr<MuonCleaner>     muoSR_cleaner;
   std::unique_ptr<ElectronCleaner> eleSR_cleaner;
 
-  std::unique_ptr<JetCleaner>                      jet_IDcleaner;
-  std::unique_ptr<JetCorrector>                    jet_corrector;
-  std::unique_ptr<GenericJetResolutionSmearer>     jetER_smearer;
-  std::unique_ptr<JetLeptonCleaner_by_KEYmatching> jetlepton_cleaner;
-  std::unique_ptr<JetCleaner>                      jet_cleaner1;
-  std::unique_ptr<JetCleaner>                      jet_cleaner2;
+  //split corrections by run periods 
+  std::unique_ptr<JetCorrector> jet_corrector;
+  std::unique_ptr<JetCorrector> jet_corrector_BCD;
+  std::unique_ptr<JetCorrector> jet_corrector_EF;
+  std::unique_ptr<JetCorrector> jet_corrector_G;
+  std::unique_ptr<JetCorrector> jet_corrector_H;
 
+  std::unique_ptr<TopJetCorrector> topjet_corrector;
+  std::unique_ptr<TopJetCorrector> topjet_corrector_BCD;
+  std::unique_ptr<TopJetCorrector> topjet_corrector_EF;
+  std::unique_ptr<TopJetCorrector> topjet_corrector_G;
+  std::unique_ptr<TopJetCorrector> topjet_corrector_H;
+
+  std::unique_ptr<SubJetCorrector> subjet_corrector;
+  std::unique_ptr<SubJetCorrector> subjet_corrector_BCD;
+  std::unique_ptr<SubJetCorrector> subjet_corrector_EF;
+  std::unique_ptr<SubJetCorrector> subjet_corrector_G;
+  std::unique_ptr<SubJetCorrector> subjet_corrector_H;
+
+  std::unique_ptr<JetLeptonCleaner> jetlepton_cleaner;
+  std::unique_ptr<JetLeptonCleaner> jetlepton_cleaner_BCD;
+  std::unique_ptr<JetLeptonCleaner> jetlepton_cleaner_EF;
+  std::unique_ptr<JetLeptonCleaner> jetlepton_cleaner_G;
+  std::unique_ptr<JetLeptonCleaner> jetlepton_cleaner_H;
+
+
+  std::unique_ptr<JetCleaner>                      jet_IDcleaner;
+  std::unique_ptr<GenericJetResolutionSmearer>     jetER_smearer;
+  std::unique_ptr<JetCleaner>                      jet_cleaner1;
   std::unique_ptr<JetCleaner>                  topjet_IDcleaner;
-  std::unique_ptr<TopJetCorrector>             topjet_corrector;
   std::unique_ptr<SubJetCorrector>             topjet_subjet_corrector;
   std::unique_ptr<GenericJetResolutionSmearer> topjetER_smearer;
   std::unique_ptr<TopJetLeptonDeltaRCleaner>   topjetlepton_cleaner;
@@ -65,8 +86,14 @@ class TTbarLJSkimmingModule : public ModuleBASE {
 
   std::unique_ptr<uhh2::AnalysisModule> ttgenprod;
 
+  //run numbers for different jet corrections
+  const int runnr_BCD = 276811;
+  const int runnr_EF = 278802;
+  const int runnr_G = 280385;
+  bool isMC;
+
   Event::Handle<float> tt_TMVA_response;// response of TMVA method, dummy value at this step
-  bool isQCDstudy;
+ 
 
 };
 
@@ -79,31 +106,24 @@ TTbarLJSkimmingModule::TTbarLJSkimmingModule(uhh2::Context& ctx){
 
   ElectronId eleID;
   float ele_pt(-1.),muon_pt(-1.), jet1_pt(-1.), jet2_pt(-1.), MET(-1.), HT_lep(-1.);
-  bool use_miniiso(false);
 
   if(keyword == "v01"){
-    isQCDstudy = false;
     ele_pt = 55.;
     muon_pt = 55.;
     eleID  = ElectronID_Spring15_25ns_tight_noIso;
-    //    eleID = ElectronID_MVAnotrig_Spring15_25ns_loose; //TEST 
-    use_miniiso = false;
-
+ 
     jet1_pt = 50.;
     jet2_pt =  50.;
 
-    MET     =  20.;
+    MET     =  50.;
     //MET     =   0.;
     HT_lep  =   0.;
   }
   else {
     if(keyword == "v02"){
-    isQCDstudy = true;
     ele_pt = 45.;
     muon_pt = 45.;
     eleID  = ElectronID_Spring15_25ns_tight_noIso;
-    //    eleID = ElectronID_MVAnotrig_Spring15_25ns_loose; //TEST 
-    use_miniiso = false;
 
     jet1_pt = 150.;
     jet2_pt =  50.;
@@ -127,8 +147,8 @@ TTbarLJSkimmingModule::TTbarLJSkimmingModule(uhh2::Context& ctx){
   metfilters_sel->add<TriggerSelection>("1-good-vtx", "Flag_goodVertices");
   metfilters_sel->add<TriggerSelection>("eeBadScFilter", "Flag_eeBadScFilter");
   metfilters_sel->add<TriggerSelection>("globalTightHalo2016Filter", "Flag_globalTightHalo2016Filter"); //TEST will be available in 80X miniAODv2 
-    metfilters_sel->add<TriggerSelection>("chargedHadronTrackResolutionFilter", "Flag_chargedHadronTrackResolutionFilter"); 
-   metfilters_sel->add<TriggerSelection>("muonBadTrackFilter", "Flag_muonBadTrackFilter");
+  metfilters_sel->add<TriggerSelection>("chargedHadronTrackResolutionFilter", "Flag_chargedHadronTrackResolutionFilter"); 
+  metfilters_sel->add<TriggerSelection>("muonBadTrackFilter", "Flag_muonBadTrackFilter");
   /**********************************/
 
   /* GEN M-ttbar selection [TTbar MC "0.<M^{gen}_{ttbar}(GeV)<700.] */
@@ -160,49 +180,86 @@ TTbarLJSkimmingModule::TTbarLJSkimmingModule(uhh2::Context& ctx){
   //  const     MuonId muoSR(AndId<Muon>    (PtEtaCut  (muon_pt   , 2.1), MuonIDLoose()));//temporary switch to LooseID due to problems with MediumID in 2016 data
   const ElectronId eleSR(AndId<Electron>(PtEtaSCCut(ele_pt, 2.5), eleID));
 
-  if(use_miniiso){
-
-    const     MuonId muoMINIIso(    Muon_MINIIso(0.05, "delta-beta"));
-    const ElectronId eleMINIIso(Electron_MINIIso(0.05, "delta-beta"));
-
-    muoSR_cleaner.reset(new     MuonCleaner(AndId<Muon>    (muoSR, muoMINIIso)));
-    eleSR_cleaner.reset(new ElectronCleaner(AndId<Electron>(eleSR, eleMINIIso)));
-  }
-  else{
-
     muoSR_cleaner.reset(new     MuonCleaner(muoSR));
     eleSR_cleaner.reset(new ElectronCleaner(eleSR));
-  }
+ 
   //
 
   const JetId jetID(JetPFID(JetPFID::WP_LOOSE));
 
-  std::vector<std::string> JEC_AK4, JEC_AK8;
-  if(isMC){
-    JEC_AK4 = JERFiles::Spring16_25ns_L123_AK4PFchs_MC;
-    JEC_AK8 = JERFiles::Spring16_25ns_L123_AK8PFchs_MC;
+  
+   std::vector<std::string> JEC_AK4, JEC_AK8,JEC_AK4_BCD,JEC_AK4_EF,JEC_AK4_G,JEC_AK4_H,JEC_AK8_BCD,JEC_AK8_EF,JEC_AK8_G,JEC_AK8_H;
+   if(isMC){
+    JEC_AK4 = JERFiles::Summer16_23Sep2016_V4_L123_AK4PFchs_MC;
+    JEC_AK8 = JERFiles::Summer16_23Sep2016_V4_L123_AK8PFchs_MC;
   }
   else {
-    JEC_AK4 = JERFiles::Spring16_25ns_L123_AK4PFchs_DATA;
-    JEC_AK8 = JERFiles::Spring16_25ns_L123_AK8PFchs_DATA;
-  }
+    JEC_AK4_BCD =  JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFchs_DATA;
+    JEC_AK4_EF = JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFchs_DATA;
+    JEC_AK4_G =  JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFchs_DATA;
+    JEC_AK4_H =  JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFchs_DATA;
+    
+    JEC_AK8_BCD =  JERFiles::Summer16_23Sep2016_V4_BCD_L123_AK4PFchs_DATA;
+    JEC_AK8_EF =  JERFiles::Summer16_23Sep2016_V4_EF_L123_AK4PFchs_DATA;
+    JEC_AK8_G =  JERFiles::Summer16_23Sep2016_V4_G_L123_AK4PFchs_DATA;
+    JEC_AK8_H =  JERFiles::Summer16_23Sep2016_V4_H_L123_AK4PFchs_DATA;  
+}
 
-  jetlepton_cleaner.reset(new JetLeptonCleaner_by_KEYmatching(ctx, JEC_AK4));//TEST
+//RECOMMENDATION ORDER: ID -> lepton cleaner -> JEC,JER -> MET Propagation
 
-  jet_IDcleaner.reset(new JetCleaner(ctx, jetID));
-  jet_corrector.reset(new JetCorrector(ctx, JEC_AK4));
-  if(isMC) jetER_smearer.reset(new GenericJetResolutionSmearer(ctx));
- 
-  jet_cleaner1.reset(new JetCleaner(ctx, 15., 3.0));
-  jet_cleaner2.reset(new JetCleaner(ctx, 30., 2.4));
-
-  topjet_IDcleaner.reset(new JetCleaner(ctx, jetID));
-  topjet_corrector.reset(new TopJetCorrector(ctx, JEC_AK8));
-  topjet_subjet_corrector.reset(new SubJetCorrector(ctx, JEC_AK4));
+    topjet_IDcleaner.reset(new JetCleaner(ctx, jetID));
+    jet_IDcleaner.reset(new JetCleaner(ctx, jetID));
   if(isMC){
+    //jet_IDcleaner.reset(new JetCleaner(ctx, jetID));
+    jet_corrector.reset(new JetCorrector(ctx, JEC_AK4));
+    jetlepton_cleaner.reset(new JetLeptonCleaner(ctx, JEC_AK4));
+    jetlepton_cleaner->set_drmax(.4);
+    jetER_smearer.reset(new GenericJetResolutionSmearer(ctx));
+    topjet_corrector.reset(new TopJetCorrector(ctx, JEC_AK8));
+    topjet_subjet_corrector.reset(new SubJetCorrector(ctx, JEC_AK4));
     ctx.declare_event_input<std::vector<Particle> >(ctx.get("TopJetCollectionGEN"), "topjetsGEN");
     topjetER_smearer.reset(new GenericJetResolutionSmearer(ctx, "topjets", "topjetsGEN", false));
   }
+  else{
+    jet_corrector_BCD.reset(new JetCorrector(ctx, JEC_AK4_BCD));
+    jet_corrector_EF.reset(new JetCorrector(ctx, JEC_AK4_EF));
+    jet_corrector_G.reset(new JetCorrector(ctx,JEC_AK4_G ));
+    jet_corrector_H.reset(new JetCorrector(ctx,JEC_AK4_H ));
+
+    topjet_corrector_BCD.reset(new TopJetCorrector(ctx, JEC_AK8_BCD));
+    topjet_corrector_EF.reset(new TopJetCorrector(ctx, JEC_AK8_EF));
+    topjet_corrector_G.reset(new TopJetCorrector(ctx,JEC_AK8_G ));
+    topjet_corrector_H.reset(new TopJetCorrector(ctx,JEC_AK8_H ));
+
+    subjet_corrector_BCD.reset(new SubJetCorrector(ctx, JEC_AK4_BCD));
+    subjet_corrector_EF.reset(new SubJetCorrector(ctx, JEC_AK4_EF));
+    subjet_corrector_G.reset(new SubJetCorrector(ctx,JEC_AK4_G ));
+    subjet_corrector_H.reset(new SubJetCorrector(ctx,JEC_AK4_H ));
+
+    jetlepton_cleaner_BCD.reset(new JetLeptonCleaner(ctx, JEC_AK4_BCD));
+    jetlepton_cleaner_EF.reset(new JetLeptonCleaner(ctx, JEC_AK4_EF));
+    jetlepton_cleaner_G.reset(new JetLeptonCleaner(ctx,JEC_AK4_G ));
+    jetlepton_cleaner_H.reset(new JetLeptonCleaner(ctx,JEC_AK4_H ));
+
+    jetlepton_cleaner_BCD->set_drmax(.4);
+    jetlepton_cleaner_EF->set_drmax(.4);
+    jetlepton_cleaner_G->set_drmax(.4);
+    jetlepton_cleaner_H->set_drmax(.4);
+
+
+  }
+  topjet_IDcleaner.reset(new JetCleaner(ctx, jetID));
+  jet_IDcleaner.reset(new JetCleaner(ctx, jetID)); 
+  jet_cleaner1.reset(new JetCleaner(ctx, 30., 2.5));
+  //jet_cleaner2.reset(new JetCleaner(ctx, 30., 2.5));
+
+  //topjet_IDcleaner.reset(new JetCleaner(ctx, jetID));
+  //topjet_corrector.reset(new TopJetCorrector(ctx, JEC_AK8));
+  //topjet_subjet_corrector.reset(new SubJetCorrector(ctx, JEC_AK4));
+  //if(isMC){
+    //ctx.declare_event_input<std::vector<Particle> >(ctx.get("TopJetCollectionGEN"), "topjetsGEN");
+    //topjetER_smearer.reset(new GenericJetResolutionSmearer(ctx, "topjets", "topjetsGEN", false));
+ ///}
   topjetlepton_cleaner.reset(new TopJetLeptonDeltaRCleaner(.8));
   topjet_cleaner.reset(new TopJetCleaner(ctx, TopJetId(PtEtaCut(500., 2.4))));
   ////
@@ -214,9 +271,7 @@ TTbarLJSkimmingModule::TTbarLJSkimmingModule(uhh2::Context& ctx){
   met_sel  .reset(new METCut  (MET   , uhh2::infinity));
   htlep_sel.reset(new HTlepCut(HT_lep, uhh2::infinity));
 
-  if(use_miniiso) twodcut_sel.reset(new TwoDCut1(-1, 20.));
-  //  else            twodcut_sel.reset(new TwoDCut1(.4, 20.));
-  else            twodcut_sel.reset(new TwoDCut1(.4, 40.));
+  twodcut_sel.reset(new TwoDCut1(.4, 40.));
   ////
 
   //// HISTS
@@ -282,19 +337,56 @@ bool TTbarLJSkimmingModule::process(uhh2::Event& event){
   ////
 
   //// JET selection
-  jetlepton_cleaner->process(event);//TEST
-
+  //jetlepton_cleaner->process(event);//TEST
+  //RECOMMENDATION ORDER: ID -> lepton cleaner -> JEC,JER -> MET Propagation
   jet_IDcleaner->process(event);
+  topjet_IDcleaner->process(event);
+  
+  if(!event.isRealData){
+    jetlepton_cleaner->process(event);
+    jet_corrector->process(event);
+    if(jetER_smearer.get()) jetER_smearer->process(event);
+    topjet_corrector->process(event);
+    topjet_subjet_corrector->process(event);
+    if(topjetER_smearer.get()) topjetER_smearer->process(event);
+  }
+  else{
+
+    if(event.run <= runnr_BCD)  { 
+      jetlepton_cleaner_BCD->process(event);      
+      jet_corrector_BCD->process(event);
+      topjet_corrector_BCD->process(event);
+      subjet_corrector_BCD->process(event);
+    }
+    else if(event.run < runnr_EF){ 
+      jetlepton_cleaner_EF->process(event);
+      jetlepton_cleaner_EF->process(event);      
+      jet_corrector_EF->process(event);
+      topjet_corrector_EF->process(event);
+      subjet_corrector_EF->process(event);
+    } 
+    else if(event.run <= runnr_G) {
+      jetlepton_cleaner_G->process(event);       
+      jet_corrector_G->process(event);
+      topjet_corrector_G->process(event);
+      subjet_corrector_G->process(event);
+    } 
+    else if(event.run > runnr_G) { 
+      jetlepton_cleaner_H->process(event);      
+      jet_corrector_H->process(event);
+      topjet_corrector_H->process(event);
+      subjet_corrector_H->process(event);
+    } 
+
+
+
+  }  
+ 
   //  LorentzVector metv4_before = event.met->v4();
-  jet_corrector->process(event);
+  //jet_corrector->process(event);
   //  LorentzVector metv4_after = event.met->v4();
   // std::cout<<"metv4_before.Pt = "<<metv4_before.Pt()<<" metv4_after.Pt = "<<metv4_after.Pt()<<std::endl;
-
-  if(jetER_smearer.get()) jetER_smearer->process(event);
-
-  jet_cleaner1->process(event);
-  sort_by_pt<Jet>(*event.jets);
-
+  
   /* lepton-2Dcut variables */
   const bool pass_twodcut = twodcut_sel->passes(event); {
 
@@ -319,15 +411,16 @@ bool TTbarLJSkimmingModule::process(uhh2::Event& event){
 
   //  if(!pass_twodcut){};//place holder
 
-  jet_cleaner2->process(event);
+  jet_cleaner1->process(event);
   sort_by_pt<Jet>(*event.jets);
 
-  topjet_IDcleaner->process(event);
-  topjet_corrector->process(event);
-  topjet_subjet_corrector->process(event);
-  if(topjetER_smearer.get()) topjetER_smearer->process(event);
-  topjetlepton_cleaner->process(event);
+  //topjet_IDcleaner->process(event);
+  //topjet_corrector->process(event);
+  //topjet_subjet_corrector->process(event);
+  //if(topjetER_smearer.get()) topjetER_smearer->process(event);
+  //topjetlepton_cleaner->process(event);
   topjet_cleaner->process(event);
+  topjetlepton_cleaner->process(event);
   sort_by_pt<TopJet>(*event.topjets);
 
   /* 2nd AK4 jet selection */
@@ -357,7 +450,7 @@ bool TTbarLJSkimmingModule::process(uhh2::Event& event){
 
   
   //// LEPTON-2Dcut selection
-  if(!pass_twodcut && !isQCDstudy) return false;
+  if(!pass_twodcut) return false;
   HFolder("twodcut")->fill(event);
   ////
 

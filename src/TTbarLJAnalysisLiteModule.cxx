@@ -757,10 +757,10 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
     reader_wjets->AddVariable("lep1__minDR_jet", &mva_lep1__minDR_jet);
     reader_wjets->AddVariable("lep1__pTrel_jet_norm", &mva_ptrel_norm);
     reader_wjets->AddVariable("jet1_csv", &mva_j1CSV);
-    reader_wjets->AddVariable("jet1_pt", &mva_jet1pt_norm);
+    //reader_wjets->AddVariable("jet1_pt", &mva_jet1pt_norm);
     reader_wjets->AddVariable("jet1_m", &mva_jet1m_norm);
     reader_wjets->AddVariable("jet2_csv", &mva_j2CSV);
-    reader_wjets->AddVariable("jet2_pt",&mva_jet2pt_norm);
+    //reader_wjets->AddVariable("jet2_pt",&mva_jet2pt_norm);
     reader_wjets->AddVariable("jet2_m", &mva_jet2m_norm);
     reader_wjets->AddVariable("njets", &mva_njets);
     //reader_wjets->AddVariable("s11", &mva_s11);
@@ -769,7 +769,7 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
     //reader_wjets->AddVariable("s22", &mva_s22);
     //reader_wjets->AddVariable("s23", &mva_s23);
     reader_wjets->AddVariable("s33", &mva_s33);
-    reader_wjets->BookMVA("BDT method", "/nfs/dust/cms/user/dansand/UHH2_2015/80X_Moriond/CMSSW_8_0_20/src/UHH2/ZprimeSemiLeptonic/TMVA_weights/80X/weights_12vars_BDT_N/TMVAClassification_BDT.weights.xml");
+    reader_wjets->BookMVA("BDT method", "/nfs/dust/cms/user/dansand/UHH2_2015/80X_Moriond_V3/CMSSW_8_0_24_patch1/src/UHH2/ZprimeSemiLeptonic/TMVA_weights/80X/weights_BDTOptimized_80X_lepton_10vars/TMVAClassification_BDT.weights.xml");
    /// Homemade ttbar MVA output for QCD
   // --- Create the Reader object
   TMVA_response = -100;
