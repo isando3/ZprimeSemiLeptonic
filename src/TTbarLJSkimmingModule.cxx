@@ -422,6 +422,7 @@ bool TTbarLJSkimmingModule::process(uhh2::Event& event){
   topjet_cleaner->process(event);
   topjetlepton_cleaner->process(event);
   sort_by_pt<TopJet>(*event.topjets);
+  sort_by_pt<TopJet>(*event.toppuppijets);
 
   /* 2nd AK4 jet selection */
   const bool pass_jet2 = jet2_sel->passes(event);

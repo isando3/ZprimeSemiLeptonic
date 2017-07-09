@@ -769,7 +769,7 @@ TTbarLJAnalysisLiteModule::TTbarLJAnalysisLiteModule(uhh2::Context& ctx){
     //reader_wjets->AddVariable("s22", &mva_s22);
     //reader_wjets->AddVariable("s23", &mva_s23);
     reader_wjets->AddVariable("s33", &mva_s33);
-    reader_wjets->BookMVA("BDT method", "/nfs/dust/cms/user/dansand/UHH2_2015/80X_Moriond_V3/CMSSW_8_0_24_patch1/src/UHH2/ZprimeSemiLeptonic/TMVA_weights/80X/weights_BDTOptimized_80X_lepton_10vars/TMVAClassification_BDT.weights.xml");
+    reader_wjets->BookMVA("BDT method", "../TMVA_weights/80X/weights_BDTOptimized_80X_lepton_10vars/TMVAClassification_BDT.weights.xml");
    /// Homemade ttbar MVA output for QCD
   // --- Create the Reader object
   TMVA_response = -100;
